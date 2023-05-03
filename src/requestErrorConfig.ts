@@ -92,6 +92,13 @@ export const errorConfig: RequestConfig = {
       const url = config?.url?.concat('?token = 123');
       return { ...config, url };
     },
+    (url: string, options: RequestConfig) => {
+      const authHeader = { Authorization: 'Bearer xxxxxx' };
+      return {
+        url: `${url}`,
+        options: { ...options, interceptors: true, headers: authHeader },
+      };
+    },
   ],
 
   // 响应拦截器

@@ -5,7 +5,7 @@ import {
   getById,
 } from '@/services/apis/inquiry';
 
-import { useParams } from 'umi';
+import { Link, useParams } from 'umi';
 
 import { InfoCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
@@ -66,14 +66,18 @@ const DetailPage: FC = () => {
       title: '关联供货SN',
       dataIndex: 'goodsSn',
       render(text, record) {
-        return (
-          <>
-            <Tag color={tagEnumMap[record.relationType].color} key={record.recId}>
-              {tagEnumMap[record.relationType].text}
-            </Tag>
-            text
-          </>
-        );
+        if (text === '-') {
+          return <></>;
+        } else {
+          return (
+            <>
+              <Tag color={tagEnumMap[record.relationType].color} key={record.recId}>
+                {tagEnumMap[record.relationType].text}
+              </Tag>
+              <Link to={'/goods/' + text}>{text}</Link>
+            </>
+          );
+        }
       },
     },
     {
@@ -96,9 +100,13 @@ const DetailPage: FC = () => {
               key="delete"
               onClick={async (e) => {
                 e.preventDefault();
-                await deleteInquiryItem(record);
-                message.success('移除商品成功');
-                loadData();
+                const resp = await deleteInquiryItem(record);
+                if (resp.code === 200) {
+                  message.success('移除商品成功');
+                  loadData();
+                } else {
+                  message.error(resp.message);
+                }
               }}
             >
               移除
@@ -110,9 +118,13 @@ const DetailPage: FC = () => {
   ];
 
   const handleBindRelation = async (values) => {
-    await bindInquiryItem(values);
-    message.success('绑定商品成功');
-    loadData();
+    const resp = await bindInquiryItem(values);
+    if (resp.code === 200) {
+      message.success('绑定商品成功');
+      loadData();
+    } else {
+      message.error(resp.message);
+    }
     setIsModalOpen(false);
   };
 
@@ -183,7 +195,7 @@ const DetailPage: FC = () => {
                   required
                   placeholder="填写客户方的商品链接"
                 />
-                <ProFormTextArea name="link" label="备注" />
+                <ProFormTextArea name="remark" label="备注" />
               </ModalForm>,
             ]}
           />

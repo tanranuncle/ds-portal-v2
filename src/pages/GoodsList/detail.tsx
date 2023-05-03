@@ -14,6 +14,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Card, Col, Divider, Form, Image, message, Row } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
 
@@ -225,7 +226,15 @@ const DetailPage: FC = () => {
               title: { dataIndex: 'user' },
               description: { dataIndex: 'content' },
               avatar: { dataIndex: 'avatar' },
-              actions: { render: () => [<span key="fakeTime">2023-4-5 19:09:12</span>] },
+              actions: {
+                render: (_, row) => {
+                  return [
+                    <span key="fakeTime">
+                      {moment(row.createdAt * 1000).format('YYYY-MM-DD HH:mm:ss')}
+                    </span>,
+                  ];
+                },
+              },
             }}
             toolBarRender={() => {
               return [

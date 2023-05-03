@@ -51,10 +51,7 @@ export async function getDetail(id: number) {
     method: 'GET',
   });
   const goodsDetail = response.data;
-  goodsDetail.imageUrls = [
-    'https://cbu01.alicdn.com/img/ibank/2019/531/659/10434956135_1177513472.jpg',
-    'https://cbu01.alicdn.com/img/ibank/2019/531/659/10434956135_1177513472.jpg',
-  ];
+  goodsDetail.imageUrls = [goodsDetail.goodsImage];
   return goodsDetail;
 }
 
@@ -80,28 +77,12 @@ export async function getComment(goodsId: number) {
   });
   const comments = response.data;
   console.log(comments);
-  //return comments;
-  return {
-    success: true,
-    data: [
-      {
-        user: 'asd',
-        avatar: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=1',
-        content: 'asdfdsdfsadf',
-      },
-      {
-        user: 'asd',
-        avatar: 'https://xsgames.co/randomusers/avatar.php?g=pixel&key=2',
-        content: 'asdfdsdfsadf',
-      },
-    ],
-    total: 2,
-  };
+  return response;
 }
 
 export async function addComment(comment) {
-  return request<any>('/api/goods/addComment', {
+  return request<any>('/api/goods/' + comment.goodsId + '/comments', {
     method: 'POST',
-    data: comment,
+    data: { ...comment, user: 'admin' },
   });
 }
