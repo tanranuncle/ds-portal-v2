@@ -9,7 +9,7 @@ import {
   ProList,
 } from '@ant-design/pro-components';
 import { Button, Image, Space, Tag } from 'antd';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'umi';
 
 // const RadioButton = Radio.Button;
@@ -40,12 +40,14 @@ import { Link } from 'umi';
 
 const GoodsList: FC = () => {
   const actionRef = useRef<ActionType>();
-
+  const [searchStr, setSearchStr] = useState();
   return (
     <PageContainer>
       <ProList<any>
         rowKey="goodsSn"
-        request={getGoodsList}
+        request={(params) => {
+          return getGoodsList({ ...params, q: searchStr });
+        }}
         itemLayout="vertical"
         actionRef={actionRef}
         pagination={{
@@ -109,6 +111,7 @@ const GoodsList: FC = () => {
           search: {
             onSearch: (value: string) => {
               console.log(value);
+              setSearchStr(value);
               if (actionRef.current) {
                 actionRef.current.reload();
               }
@@ -129,7 +132,8 @@ const GoodsList: FC = () => {
                 const success = await addGoods(value as API.Goods);
                 if (success) {
                   if (actionRef.current) {
-                    actionRef.current.reload();
+                    // setSearchStr(undefined)
+                    actionRef.current.reloadAndRest();
                   }
                 }
                 return true;
@@ -149,7 +153,7 @@ const GoodsList: FC = () => {
               />
               <ProFormText
                 rules={[{ required: true, message: '请填入商品图片链接' }]}
-                name="imageUrl"
+                name="goodsImage"
                 label="商品图片链接"
                 placeholder="http://"
               />
