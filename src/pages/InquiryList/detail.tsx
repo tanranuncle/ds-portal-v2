@@ -156,7 +156,13 @@ const DetailPage: FC = () => {
             dataSource={current?.orderGoodsList}
             columns={columns}
             toolBarRender={() => [
-              <Button key="export"> 导出表格 </Button>,
+              <Button
+                key="export"
+                onClick={() => (location.href = '/api/enquiry/export/' + current?.enquiryOrderId)}
+              >
+                {' '}
+                导出表格{' '}
+              </Button>,
               <ModalForm<API.InquiryItem>
                 key="addProduct"
                 initialValues={{ enquiryOrderId: current?.enquiryOrderId }}
