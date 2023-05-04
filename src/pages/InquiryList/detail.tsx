@@ -158,6 +158,7 @@ const DetailPage: FC = () => {
             toolBarRender={() => [
               <Button
                 key="export"
+                disabled={current?.orderGoodsList.length === 0}
                 onClick={() => (location.href = '/api/enquiry/export/' + current?.enquiryOrderId)}
               >
                 {' '}

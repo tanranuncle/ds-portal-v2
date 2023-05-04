@@ -1,4 +1,11 @@
-import { addComment, addSku, deleteSku, getComment, getDetail } from '@/services/apis/goods';
+import {
+  addComment,
+  addSku,
+  deleteSku,
+  fallbackImageData,
+  getComment,
+  getDetail,
+} from '@/services/apis/goods';
 import { EditOutlined, EllipsisOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import {
   ActionType,
@@ -27,7 +34,12 @@ const GoodsImgPreview: React.FC<{ imageList: string[] }> = ({ imageList }) => {
   } else {
     return (
       <>
-        <Image preview={{ visible: false }} src={imageList[0]} onClick={() => setVisible(true)} />
+        <Image
+          preview={{ visible: false }}
+          src={imageList[0]}
+          fallback={fallbackImageData()}
+          onClick={() => setVisible(true)}
+        />
         <div style={{ display: 'none' }}>
           <Image.PreviewGroup preview={{ visible, onVisibleChange: (vis) => setVisible(vis) }}>
             {imageList.map((imgUrl) => (
@@ -72,6 +84,10 @@ const DetailPage: FC = () => {
       dataIndex: 'suppSkuId',
     },
     {
+      title: '供应商信息',
+      dataIndex: 'suppName',
+    },
+    {
       title: '体积(长*宽*高)',
       render: (_, row) => {
         return (
@@ -81,6 +97,10 @@ const DetailPage: FC = () => {
         );
       },
       search: false,
+    },
+    {
+      title: '重量',
+      dataIndex: 'weight',
     },
     {
       title: '采购价(元)',
@@ -145,13 +165,6 @@ const DetailPage: FC = () => {
               <ProFormText name="goodsId" hidden disabled />
               <ProForm.Group>
                 <ProFormText
-                  name="skuId"
-                  label="skuId"
-                  required
-                  placeholder="填写skuId"
-                  rules={[{ required: true, message: 'skuId为必填项' }]}
-                />
-                <ProFormText
                   name="skuName"
                   label="sku名称"
                   required
@@ -177,6 +190,13 @@ const DetailPage: FC = () => {
                   rules={[{ required: true, message: '采购价为必填项' }]}
                 />
               </ProForm.Group>
+              <ProFormText
+                name="suppName"
+                label="供应商信息"
+                required
+                placeholder="填写供应商信息"
+                rules={[{ required: true, message: '供应商信息为必填项' }]}
+              />
               <ProFormText
                 name="link"
                 label="sku链接"
@@ -207,6 +227,14 @@ const DetailPage: FC = () => {
                   width="xs"
                   min={1}
                   placeholder="cm"
+                  rules={[{ required: true, message: '必填项' }]}
+                />
+                <ProFormDigit
+                  label="重量"
+                  name="weight"
+                  width="xs"
+                  min={0.01}
+                  placeholder="kg"
                   rules={[{ required: true, message: '必填项' }]}
                 />
               </ProForm.Group>

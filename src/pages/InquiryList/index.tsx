@@ -180,17 +180,6 @@ const InquiryList: React.FC = () => {
           rules={[
             {
               required: true,
-              message: '询价单号为必填项',
-            },
-          ]}
-          width="md"
-          name="enquiryOrderSn"
-          label="询价单号"
-        />
-        <ProFormText
-          rules={[
-            {
-              required: true,
               message: '询价单名称',
             },
           ]}
