@@ -10,7 +10,7 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import '@umijs/max';
-import { Button, message, Tag } from 'antd';
+import { Badge, Button, message } from 'antd';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { Link } from 'umi';
@@ -83,7 +83,11 @@ const InquiryList: React.FC = () => {
       dataIndex: 'enquiryOrderSn',
       tip: 'The enquiry Order Sn is the unique key',
       render: (dom, entity) => {
-        return <Link to={'/inquiries/' + entity.enquiryOrderId}>{dom}</Link>;
+        return (
+          <Badge size="small" offset={[10, 0]} count={entity.unRelationGoodsNum}>
+            <Link to={'/inquiries/' + entity.enquiryOrderId}>{dom}</Link>
+          </Badge>
+        );
       },
     },
     {
@@ -95,22 +99,6 @@ const InquiryList: React.FC = () => {
       title: '客户信息',
       dataIndex: 'customerInfo',
       valueType: 'textarea',
-    },
-    {
-      title: '未关联商品数',
-      dataIndex: 'unRelationGoodsNum',
-      valueType: 'text',
-      search: false,
-      render: (_, record) => {
-        if (record.unRelationGoodsNum <= 0) {
-          return '';
-        }
-        return (
-          <>
-            <Tag color="red">{record.unRelationGoodsNum}</Tag>
-          </>
-        );
-      },
     },
     {
       title: '创建时间',
