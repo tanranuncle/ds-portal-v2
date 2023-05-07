@@ -8,13 +8,24 @@ export async function inquiryList(
     current?: number;
     /** 页面的容量 */
     pageSize?: number;
+    gmtCreatedRange?: any;
+    gmtCreatedStart?: number;
+    gmtCreatedEnd?: number;
   },
   options?: { [key: string]: any },
 ) {
+  let newParams = {
+    ...params,
+    gmtCreatedStart:
+      params.gmtCreatedRange !== undefined ? Date.parse(params.gmtCreatedRange[0]) / 1000 : null,
+    gmtCreatedEnd:
+      params.gmtCreatedRange !== undefined ? Date.parse(params.gmtCreatedRange[1]) / 1000 : null,
+  };
+  delete params.gmtCreatedRange;
   const response = await request<API.Inquiry>('/api/enquiry/list', {
     method: 'POST',
     data: {
-      ...params,
+      ...newParams,
     },
     ...(options || {}),
   });
