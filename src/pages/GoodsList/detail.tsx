@@ -171,15 +171,9 @@ const DetailPage: FC = () => {
                   placeholder="填写sku名称"
                   rules={[{ required: true, message: 'sku名称为必填项' }]}
                 />
+                <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
               </ProForm.Group>
               <ProForm.Group>
-                <ProFormText
-                  name="suppSkuId"
-                  label="供方skuId"
-                  required
-                  placeholder="供方skuId"
-                  rules={[{ required: true, message: '供方skuId为必填项' }]}
-                />
                 <ProFormDigit
                   label="采购价"
                   name="purPrice"
