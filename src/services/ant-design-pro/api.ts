@@ -22,7 +22,8 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  localStorage.removeItem('jwt');
+  return request<API.LoginResult>('/api/authenticate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

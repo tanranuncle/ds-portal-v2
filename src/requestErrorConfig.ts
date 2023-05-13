@@ -93,7 +93,11 @@ export const errorConfig: RequestConfig = {
       return { ...config, url };
     },
     (url: string, options: RequestConfig) => {
-      const authHeader = { Authorization: 'Bearer xxxxxx' };
+      const jwt = localStorage.getItem('jwt');
+      let authHeader = {};
+      if (jwt) {
+        authHeader = { Authorization: 'Bearer ' + jwt };
+      }
       return {
         url: `${url}`,
         options: { ...options, interceptors: true, headers: authHeader },
