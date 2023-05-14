@@ -156,7 +156,7 @@ const Login: React.FC = () => {
           />
 
           {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码(admin/123456)'} />
+            <LoginMessage content={'错误的用户名和密码'} />
           )}
           {type === 'account' && (
             <>
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
                   size: 'large',
                   prefix: <LockOutlined />,
                 }}
-                placeholder={'密码: 123456'}
+                placeholder={'密码: password'}
                 rules={[
                   {
                     required: true,
