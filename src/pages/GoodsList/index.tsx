@@ -1,46 +1,24 @@
 import { addGoods, fallbackImageData, getGoodsList } from '@/services/apis/goods';
-import { PlusOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlusOutlined, TagOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ModalForm,
   PageContainer,
+  ProFormRadio,
   ProFormText,
   ProFormTextArea,
   ProList,
 } from '@ant-design/pro-components';
-import { Button, Image, Space, Tag } from 'antd';
+import { Badge, Button, Image, message, Tag, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
 
-// const RadioButton = Radio.Button;
-// const RadioGroup = Radio.Group;
-
-// const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
-//   <Space>
-//     {React.createElement(icon)}
-//     {text}
-//   </Space>
-// );
-
-// const extraContent = (
-//   <div>
-//     <RadioGroup defaultValue="all">
-//       <RadioButton value="all">
-//         <IconText icon={AppstoreOutlined} text="全部" key="list-vertical-like-o" />
-//       </RadioButton>
-//       <RadioButton value="progress">
-//         <IconText icon={ThunderboltOutlined} text="带电" key="list-vertical-star-o" />
-//       </RadioButton>
-//       <RadioButton value="waiting">
-//         <IconText icon={TagOutlined} text="特货" key="list-vertical-message" />
-//       </RadioButton>
-//     </RadioGroup>
-//   </div>
-// );
-
 const GoodsList: FC = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const actionRef = useRef<ActionType>();
   const [searchStr, setSearchStr] = useState();
+
   return (
     <PageContainer>
       <ProList<any>
@@ -62,19 +40,20 @@ const GoodsList: FC = () => {
           },
           subTitle: {
             render: (_, row) => {
-              console.log(row);
-              const labels = [
-                { name: 'red', color: 'red' },
-                { name: 'blue', color: 'blue' },
-              ];
               return (
-                <Space size={0}>
-                  {labels?.map((label: { name: string }) => (
-                    <Tag color={label.color} key={label.name}>
-                      {label.name}
-                    </Tag>
-                  ))}
-                </Space>
+                <>
+                  {contextHolder}
+                  <CopyToClipboard
+                    text={row.goodsSn}
+                    onCopy={() => {
+                      messageApi.info('已复制到剪切板');
+                    }}
+                  >
+                    <Tooltip title="复制商品SN">
+                      <Button type="link" icon={<CopyOutlined />} />
+                    </Tooltip>
+                  </CopyToClipboard>
+                </>
               );
             },
           },
@@ -86,19 +65,58 @@ const GoodsList: FC = () => {
           },
           extra: {
             dataIndex: 'goodsImage',
-            render: (goodsImage: string) => (
-              <Image width={200} height={200} src={goodsImage} fallback={fallbackImageData()} />
-            ),
+            render: (goodsImage: string, row) => {
+              if (row.goodsType === 3) {
+                return (
+                  <Badge.Ribbon
+                    text={
+                      <Tooltip title="特货">
+                        <TagOutlined />
+                      </Tooltip>
+                    }
+                    color="volcano"
+                  >
+                    <Image
+                      width={200}
+                      height={200}
+                      src={goodsImage}
+                      fallback={fallbackImageData()}
+                    />
+                  </Badge.Ribbon>
+                );
+              } else if (row.goodsType === 2) {
+                return (
+                  <Badge.Ribbon
+                    text={
+                      <Tooltip title="带电">
+                        <ThunderboltOutlined />
+                      </Tooltip>
+                    }
+                    color="gold"
+                  >
+                    <Image
+                      width={200}
+                      height={200}
+                      src={goodsImage}
+                      fallback={fallbackImageData()}
+                    />
+                  </Badge.Ribbon>
+                );
+              } else {
+                return (
+                  <Image width={200} height={200} src={goodsImage} fallback={fallbackImageData()} />
+                );
+              }
+            },
           },
           actions: {
-            render: (text, row) => [
-              <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="link">
-                编辑
-              </a>,
-              <a href={row.html_url} target="_blank" rel="noopener noreferrer" key="view">
-                删除
-              </a>,
-            ],
+            render: (text, row) => {
+              return row.goodsTags?.map((label: string) => (
+                <Tag color={label} key={label}>
+                  {label}
+                </Tag>
+              ));
+            },
           },
         }}
         toolbar={{
@@ -139,6 +157,16 @@ const GoodsList: FC = () => {
                 width="md"
                 name="goodsName"
                 label="商品名称"
+              />
+              <ProFormRadio.Group
+                name="goodsType"
+                label="商品类型"
+                initialValue={'1'}
+                options={[
+                  { label: '普通', value: '1' },
+                  { label: '带电', value: '2' },
+                  { label: '特货', value: '3' },
+                ]}
               />
               <ProFormText
                 rules={[{ required: true, message: '请填入商品图片链接' }]}

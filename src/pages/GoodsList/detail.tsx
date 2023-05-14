@@ -5,6 +5,7 @@ import {
   fallbackImageData,
   getComment,
   getDetail,
+  updateSku,
 } from '@/services/apis/goods';
 import { EditOutlined, EllipsisOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import {
@@ -20,7 +21,7 @@ import {
   ProList,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Card, Col, Divider, Form, Image, message, Row } from 'antd';
+import { Button, Card, Col, Divider, Form, Image, message, Popconfirm, Row } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
@@ -54,6 +55,7 @@ const GoodsImgPreview: React.FC<{ imageList: string[] }> = ({ imageList }) => {
 
 const DetailPage: FC = () => {
   const [current, setCurrent] = useState<Partial<API.Goods> | undefined>(undefined);
+  const [skuModalVisit, setSkuModalVisit] = useState(false);
   const [tabKey, setTabKey] = useState<tabKeyType>('skuList');
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
@@ -68,6 +70,31 @@ const DetailPage: FC = () => {
     console.log(params);
     loadData();
   }, []);
+
+  const handleDeleteSku = async (skuId) => {
+    await deleteSku(skuId);
+    loadData();
+    message.success('删除成功');
+    return true;
+  };
+
+  const handleModifySku = (sku) => {
+    form.setFieldsValue(sku);
+    setSkuModalVisit(true);
+  };
+
+  const handleSkuSubmit = async (values: API.Sku) => {
+    console.log(values);
+    if (values.skuId) {
+      await updateSku(values);
+    } else {
+      await addSku(values);
+    }
+    loadData();
+    message.success('提交成功');
+    setSkuModalVisit(false);
+    return true;
+  };
 
   const skuColumns: ProColumns<API.Sku>[] = [
     {
@@ -112,18 +139,23 @@ const DetailPage: FC = () => {
       valueType: 'option',
       key: 'option',
       render: (text, record) => [
-        <a
-          key={'deleteSku' + text}
-          onClick={async () => {
-            await deleteSku(record.skuId);
-            loadData();
-            message.success('删除成功');
-            return true;
-          }}
+        <Button
+          key={'skuEditBtn' + record.skuId}
+          size="small"
+          type="link"
+          onClick={() => handleModifySku(record)}
         >
-          {' '}
-          删除{' '}
-        </a>,
+          编辑
+        </Button>,
+        <Popconfirm
+          key={'skuDelPop' + record.skuId}
+          title="删除后不能恢复"
+          onConfirm={() => handleDeleteSku(record.skuId)}
+        >
+          <Button key={'skuDelBtn' + record.skuId} size="small" danger type="link">
+            删除
+          </Button>
+        </Popconfirm>,
       ],
     },
   ];
@@ -141,6 +173,7 @@ const DetailPage: FC = () => {
               initialValues={{ goodsId: current?.goodsId }}
               key="addSKu"
               title="添加sku"
+              open={skuModalVisit}
               trigger={
                 <Button type="primary">
                   <PlusOutlined />
@@ -151,18 +184,14 @@ const DetailPage: FC = () => {
               autoFocusFirstInput
               modalProps={{
                 destroyOnClose: true,
-                // onCancel: () => console.log('run'),
+                onCancel: () => setSkuModalVisit(false),
               }}
               submitTimeout={2000}
-              onFinish={async (values: API.Sku) => {
-                await addSku(values);
-                loadData();
-                message.success('提交成功');
-                return true;
-              }}
+              onFinish={handleSkuSubmit}
               layout="horizontal"
             >
               <ProFormText name="goodsId" hidden disabled />
+              <ProFormText name="skuId" hidden disabled />
               <ProForm.Group>
                 <ProFormText
                   name="skuName"

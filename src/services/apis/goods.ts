@@ -62,6 +62,13 @@ export async function addSku(sku: API.Sku) {
   });
 }
 
+export async function updateSku(sku: API.Sku) {
+  return request<API.Sku>('/api/goods/updateSku', {
+    method: 'POST',
+    data: sku,
+  });
+}
+
 export async function deleteSku(skuId: number) {
   return request<API.Sku>('/api/goods/deleteSku', {
     method: 'POST',

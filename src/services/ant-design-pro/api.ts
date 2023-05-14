@@ -33,6 +33,13 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
+export async function getUsers(options?: { [key: string]: any }) {
+  return request<API.User>('/api/users', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /api/notices */
 export async function getNotices(options?: { [key: string]: any }) {
   return request<API.NoticeIconList>('/api/notices', {
