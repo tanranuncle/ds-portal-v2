@@ -34,9 +34,30 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 }
 
 export async function getUsers(options?: { [key: string]: any }) {
-  return request<API.User>('/api/users', {
+  const response = await request<API.User>('/api/users', {
     method: 'GET',
     ...(options || {}),
+  });
+  // todo: 暂时在这里转换响应结构，后面需要统一拦截器处理
+  let respData = {
+    data: [],
+    // success 请返回 true，
+    // 不然 table 会停止解析数据，即使有数据
+    success: false,
+    // 不传会使用 data 的长度，如果是分页一定要传
+    total: 0,
+  };
+  respData.success = true;
+  respData.data = response.userList;
+  respData.total = response.total;
+  return respData;
+}
+
+/** 新增编辑用户 */
+export async function addUpdateUser(userInfo: API.User) {
+  return request<API.User>('/api/addUpdateUser', {
+    method: 'POST',
+    data: userInfo,
   });
 }
 
