@@ -1,5 +1,5 @@
 import { addUpdateUser, getUsers } from '@/services/ant-design-pro/api';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UserOutlined } from '@ant-design/icons';
 import {
   ActionType,
   ModalForm,
@@ -66,7 +66,7 @@ const Admin: React.FC = () => {
       render(text, record) {
         return (
           <>
-            <Avatar src={record.avatar} size={60} />
+            <Avatar src={text} icon={<UserOutlined />} size={60} alt={record.username} />
           </>
         );
       },
