@@ -150,10 +150,7 @@ const Admin: React.FC = () => {
           const success = await handleAddUpdate(value as API.User);
           if (success) {
             handleModalOpen(false);
-            console.log('1111');
-            console.log(actionRef.current);
             if (actionRef.current) {
-              console.log('2222');
               actionRef.current.reload();
             }
           }
