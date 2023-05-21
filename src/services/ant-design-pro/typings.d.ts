@@ -147,4 +147,19 @@ declare namespace API {
     width: number;
     height: number;
   };
+
+  type FeeCountryConfigType = {
+    id: React.Key;
+    country: string;
+    shippingTime: string;
+    items: FeeItemConfigType[];
+  };
+
+  type FeeItemConfigType = {
+    id: React.Key;
+    left?: string;
+    right?: string;
+    shippingFee?: string;
+    extraFee?: string;
+  };
 }

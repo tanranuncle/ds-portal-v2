@@ -27,6 +27,12 @@ export default [
       { path: '/admin', redirect: '/admin/users' },
       { path: '/admin/users', name: '用户管理', component: './Admin' },
       { path: '/admin/config', name: '运费配置', component: './ShippingConfig' },
+      {
+        path: '/admin/config/detail',
+        hideInMenu: true,
+        name: '配置详情',
+        component: './ShippingConfig/detail',
+      },
     ],
   },
 ];
