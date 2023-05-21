@@ -386,7 +386,7 @@ const DetailPage: FC = () => {
                           gz: { text: '广州仓库' },
                         }}
                       >
-                        yw
+                        {current?.depot}
                       </ProDescriptions.Item>
                     </ProDescriptions>
                     {current?.goodsTags?.map((x) => (

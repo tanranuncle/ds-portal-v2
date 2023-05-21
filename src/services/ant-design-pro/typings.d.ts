@@ -137,6 +137,7 @@ declare namespace API {
     goodsName: string;
     imageUrls: string[];
     remark: string;
+    depot: string;
     skuList: Sku[];
     goodsTags?: string[];
   };

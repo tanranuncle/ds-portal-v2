@@ -1,4 +1,5 @@
 import { request } from '@umijs/max';
+import { message } from 'antd';
 
 /** 获取商品列表 */
 export async function getGoodsList(
@@ -66,8 +67,13 @@ export async function getDetail(id: number) {
   const response = await request<API.Goods>('/api/goods/detail/' + id, {
     method: 'GET',
   });
-  const goodsDetail = response.data;
-  goodsDetail.imageUrls = [goodsDetail.goodsImage];
+  let goodsDetail;
+  if (response.code === 200) {
+    goodsDetail = response.data;
+    goodsDetail.imageUrls = [goodsDetail.goodsImage];
+  } else {
+    message.error(response.message);
+  }
   return goodsDetail;
 }
 
