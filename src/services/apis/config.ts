@@ -1,6 +1,7 @@
 export type DataSourceType = {
   id: React.Key;
   country?: string;
+  volWeightRate?: number;
   shippingTime?: string;
   left?: string;
   right?: string;
@@ -88,6 +89,7 @@ export async function getShippingConfig(
       r.push({
         country: d.country,
         shippingTime: d.shippingTime,
+        volWeightRate: 8000,
         ...i,
         id: d.id + '_' + i.id,
         rowSpan: d.id === lastId ? 0 : d.items.length,

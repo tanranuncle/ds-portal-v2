@@ -5,6 +5,7 @@ import {
   ModalForm,
   PageContainer,
   ProFormRadio,
+  ProFormSelect,
   ProFormText,
   ProFormTextArea,
   ProList,
@@ -167,6 +168,13 @@ const GoodsList: FC = () => {
                   { label: '带电', value: '2' },
                   { label: '特货', value: '3' },
                 ]}
+              />
+              <ProFormSelect
+                name="depot"
+                label="收获仓库"
+                valueEnum={{ yw: '义务仓库', gz: '广州仓库' }}
+                placeholder="请选择收获仓库"
+                rules={[{ required: true, message: '请选择收获仓库' }]}
               />
               <ProFormText
                 rules={[{ required: true, message: '请填入商品图片链接' }]}

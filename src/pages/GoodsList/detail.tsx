@@ -14,6 +14,7 @@ import {
   ModalForm,
   PageContainer,
   ProColumns,
+  ProDescriptions,
   ProForm,
   ProFormDigit,
   ProFormText,
@@ -21,7 +22,7 @@ import {
   ProList,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Card, Col, Divider, Form, Image, message, Popconfirm, Row } from 'antd';
+import { Button, Card, Col, Divider, Form, Image, message, Popconfirm, Row, Tag } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
@@ -126,13 +127,19 @@ const DetailPage: FC = () => {
       search: false,
     },
     {
-      title: '重量',
+      title: '重量(kg)',
       dataIndex: 'weight',
+      render: (text) => {
+        return text + ' kg';
+      },
     },
     {
       title: '采购价(元)',
       dataIndex: 'purPrice',
       search: false,
+      render: (text) => {
+        return text + ' RMB';
+      },
     },
     {
       title: '操作',
@@ -336,6 +343,22 @@ const DetailPage: FC = () => {
                   <>
                     {current?.remark}
                     <Divider dashed />
+                    <ProDescriptions>
+                      <ProDescriptions.Item
+                        label="收货仓库"
+                        valueEnum={{
+                          yw: { text: '义务仓库' },
+                          gz: { text: '广州仓库' },
+                        }}
+                      >
+                        yw
+                      </ProDescriptions.Item>
+                    </ProDescriptions>
+                    {current?.goodsTags?.map((x) => (
+                      <Tag key={current?.goodsId + '_' + x} color={x}>
+                        {x}
+                      </Tag>
+                    ))}
                     {/* <TagList tags={[{ key: 'red', label: 'red' }]} /> */}
                   </>
                 }

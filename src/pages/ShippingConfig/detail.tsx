@@ -46,6 +46,17 @@ export default () => {
       width: '15%',
     },
     {
+      title: '记抛比',
+      dataIndex: 'volWeightRate',
+      tooltip: '只读，使用form.getFieldValue可以获取到值',
+      readonly: true,
+      width: '15%',
+      onCell: (row, index) => {
+        console.log(index);
+        return { rowSpan: row.rowSpan };
+      },
+    },
+    {
       title: '参考时效',
       dataIndex: 'shippingTime',
       tooltip: '只读，使用form.getFieldValue可以获取到值',

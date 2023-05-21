@@ -138,6 +138,7 @@ declare namespace API {
     imageUrls: string[];
     remark: string;
     skuList: Sku[];
+    goodsTags?: string[];
   };
 
   type Sku = {
