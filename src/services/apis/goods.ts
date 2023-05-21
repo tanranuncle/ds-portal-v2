@@ -45,6 +45,22 @@ export async function addGoods(goods: API.Goods) {
   });
 }
 
+/** 编辑商品 */
+export async function editGoods(goods: API.Goods) {
+  return request<API.Goods>('/api/goods/updateGoods', {
+    method: 'POST',
+    data: goods,
+  });
+}
+
+/** 删除商品 */
+export async function deleteGoods(goods: API.Goods) {
+  return request<API.Goods>('/api/goods/deleteGoods', {
+    method: 'POST',
+    data: goods,
+  });
+}
+
 /** 获取商品详情 */
 export async function getDetail(id: number) {
   const response = await request<API.Goods>('/api/goods/detail/' + id, {
