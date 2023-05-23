@@ -19,7 +19,6 @@ import {
   ProDescriptions,
   ProForm,
   ProFormDigit,
-  ProFormRadio,
   ProFormText,
   ProFormTextArea,
   ProList,
@@ -29,6 +28,8 @@ import { Button, Card, Col, Divider, Form, Image, message, Popconfirm, Row, Tag 
 import moment from 'moment';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
+
+import UpdateForm from './eum';
 
 export type tabKeyType = 'skuList' | 'records';
 
@@ -64,7 +65,6 @@ const DetailPage: FC = () => {
   const actionRef = useRef<ActionType>();
   const [form] = Form.useForm();
 
-  const [editProductModalOpen, handleEditProductModalOpen] = useState<boolean>(false);
   const [bindEditProductForm] = Form.useForm();
 
   const params = useParams();
@@ -78,12 +78,7 @@ const DetailPage: FC = () => {
     loadData();
   }, []);
 
-  const showEditProductModal = (current) => {
-    bindEditProductForm.resetFields();
-    current.goodsType = String(current.goodsType);
-    bindEditProductForm.setFieldsValue({ ...current });
-    handleEditProductModalOpen(true);
-  };
+  bindEditProductForm.setFieldsValue({ ...current });
 
   const handleDeleteSku = async (skuId) => {
     await deleteSku(skuId);
@@ -345,12 +340,20 @@ const DetailPage: FC = () => {
             <Card
               cover={<GoodsImgPreview imageList={current?.imageUrls} />}
               actions={[
-                <EditOutlined
-                  key="edit"
-                  onClick={() => {
-                    showEditProductModal(current);
+                <UpdateForm
+                  values={current}
+                  onFinish={async (value) => {
+                    const success = await editGoods(value as API.Goods);
+                    if (success) {
+                      loadData();
+                      return true;
+                    }
+                    return false;
                   }}
+                  trigger={<EditOutlined key="edit" />}
+                  title="编辑商品"
                 />,
+
                 <Popconfirm
                   title="删除商品"
                   description="确认要删除这个商品吗?"
@@ -417,59 +420,6 @@ const DetailPage: FC = () => {
           </Col>
         </Row>
       </GridContent>
-
-      <ModalForm
-        title={'编辑商品'}
-        key="editProduct"
-        width="600px"
-        open={editProductModalOpen}
-        onOpenChange={handleEditProductModalOpen}
-        form={bindEditProductForm}
-        onFinish={async (value) => {
-          const success = await editGoods(value as API.Goods);
-          if (success) {
-            handleEditProductModalOpen(false);
-            loadData();
-          }
-          return true;
-        }}
-      >
-        <ProFormText
-          rules={[
-            {
-              message: '商品ID',
-              required: true,
-            },
-          ]}
-          hidden={true}
-          width="md"
-          name="goodsId"
-          label="商品ID"
-        />
-        <ProFormText
-          rules={[{ required: true, message: '商品名称为必填项' }]}
-          width="md"
-          name="goodsName"
-          label="商品名称"
-        />
-        <ProFormRadio.Group
-          name="goodsType"
-          label="商品类型"
-          initialValue={'1'}
-          options={[
-            { label: '普通', value: '1' },
-            { label: '带电', value: '2' },
-            { label: '特货', value: '3' },
-          ]}
-        />
-        <ProFormText
-          rules={[{ required: true, message: '请填入商品图片链接' }]}
-          name="goodsImage"
-          label="商品图片链接"
-          placeholder="http://"
-        />
-        <ProFormTextArea name="remark" label="商品描述" />
-      </ModalForm>
     </PageContainer>
   );
 };

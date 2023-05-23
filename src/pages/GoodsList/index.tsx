@@ -1,19 +1,12 @@
 import { addGoods, fallbackImageData, getGoodsList } from '@/services/apis/goods';
 import { CopyOutlined, PlusOutlined, TagOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  ModalForm,
-  PageContainer,
-  ProFormRadio,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  ProList,
-} from '@ant-design/pro-components';
+import { ActionType, PageContainer, ProList } from '@ant-design/pro-components';
 import { Badge, Button, Image, message, Tag, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
+
+import UpdateForm from './eum';
 
 const GoodsList: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -132,58 +125,26 @@ const GoodsList: FC = () => {
             },
           },
           actions: [
-            <ModalForm
-              title={'新建商品'}
-              key="addProduct"
-              width="600px"
+            <UpdateForm
+              onFinish={async (value) => {
+                const success = await addGoods(value as API.Goods);
+                if (success) {
+                  if (actionRef.current) {
+                    // setSearchStr(undefined)
+                    actionRef.current?.reloadAndRest();
+                  }
+                  return true;
+                }
+                return false;
+              }}
               trigger={
                 <Button type="primary">
                   <PlusOutlined />
                   添加商品
                 </Button>
               }
-              onFinish={async (value) => {
-                const success = await addGoods(value as API.Goods);
-                if (success) {
-                  if (actionRef.current) {
-                    // setSearchStr(undefined)
-                    actionRef.current.reloadAndRest();
-                  }
-                }
-                return true;
-              }}
-            >
-              <ProFormText
-                rules={[{ required: true, message: '商品名称为必填项' }]}
-                width="md"
-                name="goodsName"
-                label="商品名称"
-              />
-              <ProFormRadio.Group
-                name="goodsType"
-                label="商品类型"
-                initialValue={'1'}
-                options={[
-                  { label: '普通', value: '1' },
-                  { label: '带电', value: '2' },
-                  { label: '特货', value: '3' },
-                ]}
-              />
-              <ProFormSelect
-                name="depot"
-                label="收获仓库"
-                valueEnum={{ yw: '义务仓库', gz: '广州仓库' }}
-                placeholder="请选择收获仓库"
-                rules={[{ required: true, message: '请选择收获仓库' }]}
-              />
-              <ProFormText
-                rules={[{ required: true, message: '请填入商品图片链接' }]}
-                name="goodsImage"
-                label="商品图片链接"
-                placeholder="http://"
-              />
-              <ProFormTextArea name="remark" label="商品描述" />
-            </ModalForm>,
+              title="新建商品"
+            />,
           ],
         }}
       />
