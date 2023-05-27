@@ -1,7 +1,8 @@
+import { addChannel, ChannelType, getChannelList } from '@/services/apis/logistic';
 import type { ProColumns } from '@ant-design/pro-components';
-import { EditableProTable, ProCard, ProFormField, ProFormRadio } from '@ant-design/pro-components';
+import { ActionType, EditableProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
@@ -11,86 +12,50 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-type DataSourceType = {
-  id: React.Key;
-  title?: string;
-  readonly?: string;
-  decs?: string;
-  state?: string;
-  created_at?: string;
-  update_at?: string;
-  children?: DataSourceType[];
-};
-
-const defaultData: DataSourceType[] = [
-  {
-    id: 624748504,
-    title: '云途全球专线挂号（特惠带电）',
-    readonly: 'THZXR',
-    decs: '09:00',
-    state: '云途物流',
-    created_at: '5-15工作日',
-    update_at: '1590486176000',
-  },
-  {
-    id: 624691229,
-    title: '云途全球专线平邮（特惠带电）',
-    readonly: 'THZXU',
-    decs: '09:00',
-    state: '云途物流',
-    created_at: '5-15工作日',
-    update_at: '1590481162000',
-  },
-];
-
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
-  const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>('bottom');
+  const actionRef = useRef<ActionType>();
 
-  const columns: ProColumns<DataSourceType>[] = [
+  const columns: ProColumns<ChannelType>[] = [
     {
       title: '渠道',
-      dataIndex: 'title',
-      tooltip: '只读，使用form.getFieldValue获取不到值',
+      dataIndex: 'name',
+      tooltip: '渠道名称',
       formItemProps: (form, { rowIndex }) => {
         return {
           rules: rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
         };
       },
       // 第一行不允许编辑
-      editable: (text, record, index) => {
-        return index !== 0;
-      },
+      // editable: (text, record, index) => {
+      //   return index !== 0;
+      // },
       width: '15%',
     },
     {
       title: '运输代码',
-      dataIndex: 'readonly',
-      tooltip: '只读，使用form.getFieldValue可以获取到值',
+      dataIndex: 'code',
+      tooltip: '代码',
       //   readonly: true,
       width: '15%',
     },
     {
       title: '物流公司',
-      key: 'state',
-      dataIndex: 'state',
+      dataIndex: 'company',
       valueType: 'select',
       valueEnum: {
         // all: { text: '全部', status: 'Default' },
-        open: {
+        yuntu: {
           text: '云途物流',
-          status: 'Error',
         },
-        closed: {
+        ubi: {
           text: 'UBI',
-          status: 'Success',
         },
       },
     },
     {
       title: '截件时间',
-      dataIndex: 'decs',
+      dataIndex: 'cutOffTime',
       fieldProps: (form, { rowKey, rowIndex }) => {
         if (form.getFieldValue([rowKey || '', 'title']) === '不好玩') {
           return {
@@ -107,14 +72,14 @@ export default () => {
     },
     {
       title: '参考时效',
-      dataIndex: 'created_at',
+      dataIndex: 'costTime',
     },
     {
       title: '价格表',
       valueType: 'option',
       width: 200,
-      render: () => [
-        <Link key="editable" to="/admin/config/detail">
+      render: (_, row) => [
+        <Link key="editable" to={'/admin/config/detail/' + row.recId}>
           进入价格表
         </Link>,
       ],
@@ -123,76 +88,38 @@ export default () => {
 
   return (
     <>
-      <EditableProTable<DataSourceType>
-        rowKey="id"
+      <EditableProTable<ChannelType>
+        actionRef={actionRef}
+        rowKey="recId"
         headerTitle="可编辑表格"
-        maxLength={5}
+        maxLength={10}
         scroll={{
           x: 960,
         }}
-        recordCreatorProps={
-          position !== 'hidden'
-            ? {
-                position: position as 'top',
-                record: () => ({ id: (Math.random() * 1000000).toFixed(0) }),
-              }
-            : false
-        }
+        recordCreatorProps={{
+          position: 'bottom',
+          record: () => ({ recId: (Math.random() * 1000000).toFixed(0) }),
+        }}
         loading={false}
-        toolBarRender={() => [
-          <ProFormRadio.Group
-            key="render"
-            fieldProps={{
-              value: position,
-              onChange: (e) => setPosition(e.target.value),
-            }}
-            options={[
-              {
-                label: '添加到顶部',
-                value: 'top',
-              },
-              {
-                label: '添加到底部',
-                value: 'bottom',
-              },
-              {
-                label: '隐藏',
-                value: 'hidden',
-              },
-            ]}
-          />,
-        ]}
+        toolBarRender={() => []}
         columns={columns}
-        request={async () => ({
-          data: defaultData,
-          total: 3,
-          success: true,
-        })}
-        value={dataSource}
-        onChange={setDataSource}
+        request={getChannelList}
         editable={{
           type: 'multiple',
           editableKeys,
           onSave: async (rowKey, data, row) => {
             console.log(rowKey, data, row);
-            await waitTime(2000);
+            addChannel(data).then((x) => {
+              if (x.code === 200) {
+                if (actionRef.current) {
+                  actionRef.current.reload();
+                }
+              }
+            });
           },
           onChange: setEditableRowKeys,
         }}
       />
-      <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
-        <ProFormField
-          ignoreFormItem
-          fieldProps={{
-            style: {
-              width: '100%',
-            },
-          }}
-          mode="read"
-          valueType="jsonCode"
-          text={JSON.stringify(dataSource)}
-        />
-      </ProCard>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { DataSourceType, getShippingConfig } from '@/services/apis/config';
+import { getShippingConfig, ShippingConfigType } from '@/services/apis/logistic';
 import { UploadOutlined } from '@ant-design/icons';
 import {
   EditableProTable,
@@ -12,6 +12,8 @@ import type { UploadProps } from 'antd';
 import { Button, message, Upload } from 'antd';
 import React, { useState } from 'react';
 
+import { useParams } from 'umi';
+
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -22,12 +24,14 @@ const waitTime = (time: number = 100) => {
 
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
+  const [dataSource, setDataSource] = useState<readonly ShippingConfigType[]>([]);
   // const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>(
   //   'bottom',
   // );
 
-  const columns: ProColumns<DataSourceType>[] = [
+  const { channelId } = useParams();
+
+  const columns: ProColumns<ShippingConfigType>[] = [
     {
       title: '国家/地区',
       dataIndex: 'country',
@@ -156,7 +160,7 @@ export default () => {
 
   return (
     <PageContainer content={' 这个页面只有 admin 权限才能查看'}>
-      <EditableProTable<DataSourceType>
+      <EditableProTable<ShippingConfigType>
         rowKey="id"
         size="small"
         headerTitle={
@@ -183,7 +187,7 @@ export default () => {
           </Button>,
         ]}
         columns={columns}
-        request={getShippingConfig}
+        request={(params) => getShippingConfig({ channelId: channelId, ...params })}
         value={dataSource}
         onChange={setDataSource}
         editable={{
