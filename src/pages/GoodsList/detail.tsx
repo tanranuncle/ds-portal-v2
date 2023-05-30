@@ -30,6 +30,9 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
 
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 import UpdateForm from './eum';
 
 export type tabKeyType = 'skuList' | 'records';
@@ -176,6 +179,18 @@ const DetailPage: FC = () => {
     },
   ];
 
+  /*富文本编辑*/
+  const [recordContent, setRecordContent] = useState('');
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  };
+
   // 渲染tab切换
   const renderChildrenByTabKey = (tabValue: tabKeyType) => {
     if (tabValue === 'skuList') {
@@ -291,7 +306,18 @@ const DetailPage: FC = () => {
             actionRef={actionRef}
             metas={{
               title: { dataIndex: 'user' },
-              description: { dataIndex: 'content' },
+              description: {
+                dataIndex: 'content',
+                render: (_, row) => {
+                  return (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: `${row.content.replaceAll('\n', '</br>')}`,
+                      }}
+                    ></div>
+                  );
+                },
+              },
               avatar: { dataIndex: 'avatar' },
               actions: {
                 render: (_, row) => {
@@ -309,8 +335,9 @@ const DetailPage: FC = () => {
                   initialValues={{ goodsId: current?.goodsId }}
                   key="addComment"
                   onFinish={async (values) => {
-                    await addComment(values);
+                    await addComment({ ...values, content: recordContent });
                     actionRef.current?.reloadAndRest?.();
+                    setRecordContent('');
                     message.success('提交成功');
                     return true;
                   }}
@@ -322,7 +349,19 @@ const DetailPage: FC = () => {
                   }
                 >
                   <ProFormText name="goodsId" hidden disabled />
-                  <ProFormTextArea name="content" label="记录" />
+                  <ProForm.Item
+                    label="记录"
+                    name="content"
+                    rules={[{ required: true, message: '请输入记录' }]}
+                    style={{ height: 400 }}
+                  >
+                    <ReactQuill
+                      style={{ height: 330 }}
+                      modules={quillModules}
+                      value={recordContent}
+                      onChange={setRecordContent}
+                    />
+                  </ProForm.Item>
                 </ModalForm>,
               ];
             }}
