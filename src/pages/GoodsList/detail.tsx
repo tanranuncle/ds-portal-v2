@@ -1,6 +1,7 @@
 import {
   addComment,
   addSku,
+  deleteComment,
   deleteGoods,
   deleteSku,
   editGoods,
@@ -86,6 +87,12 @@ const DetailPage: FC = () => {
   const handleDeleteSku = async (skuId) => {
     await deleteSku(skuId);
     loadData();
+    message.success('删除成功');
+    return true;
+  };
+  const handleDeleteGoodsComment = async (commentId) => {
+    await deleteComment(commentId);
+    actionRef.current?.reload();
     message.success('删除成功');
     return true;
   };
@@ -318,12 +325,35 @@ const DetailPage: FC = () => {
                 },
               },
               avatar: { dataIndex: 'avatar' },
-              actions: {
+              subTitle: {
                 render: (_, row) => {
                   return [
                     <span key="fakeTime">
                       {moment(row.createdAt * 1000).format('YYYY-MM-DD HH:mm:ss')}
                     </span>,
+                  ];
+                },
+              },
+              actions: {
+                render: (_, row) => {
+                  if (!row.owner) {
+                    return '';
+                  }
+                  return [
+                    <Popconfirm
+                      key={'goodsCommentId' + row.recId}
+                      title="确认删除商品记录吗？"
+                      onConfirm={() => handleDeleteGoodsComment(row.recId)}
+                    >
+                      <Button
+                        key={'goodsCommentDelBtn' + row.recId}
+                        size="small"
+                        danger
+                        type="link"
+                      >
+                        删除
+                      </Button>
+                    </Popconfirm>,
                   ];
                 },
               },
