@@ -1,11 +1,12 @@
 import { addGoods, fallbackImageData, getGoodsList } from '@/services/apis/goods';
-import { CopyOutlined, PlusOutlined, TagOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProList } from '@ant-design/pro-components';
-import { Badge, Button, Image, message, Tag, Tooltip } from 'antd';
+import { Button, Image, message, Tag, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
 
+import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import UpdateForm from './eum';
 
 const GoodsList: FC = () => {
@@ -60,47 +61,11 @@ const GoodsList: FC = () => {
           extra: {
             dataIndex: 'goodsImage',
             render: (goodsImage: string, row) => {
-              if (row.goodsType === 3) {
-                return (
-                  <Badge.Ribbon
-                    text={
-                      <Tooltip title="特货">
-                        <TagOutlined />
-                      </Tooltip>
-                    }
-                    color="volcano"
-                  >
-                    <Image
-                      width={200}
-                      height={200}
-                      src={goodsImage}
-                      fallback={fallbackImageData()}
-                    />
-                  </Badge.Ribbon>
-                );
-              } else if (row.goodsType === 2) {
-                return (
-                  <Badge.Ribbon
-                    text={
-                      <Tooltip title="带电">
-                        <ThunderboltOutlined />
-                      </Tooltip>
-                    }
-                    color="gold"
-                  >
-                    <Image
-                      width={200}
-                      height={200}
-                      src={goodsImage}
-                      fallback={fallbackImageData()}
-                    />
-                  </Badge.Ribbon>
-                );
-              } else {
-                return (
+              return (
+                <GoodsRibbon goodsType={row.goodsType}>
                   <Image width={200} height={200} src={goodsImage} fallback={fallbackImageData()} />
-                );
-              }
+                </GoodsRibbon>
+              );
             },
           },
           actions: {

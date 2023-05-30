@@ -67,7 +67,7 @@ export async function addInquiry(inquiry: API.Inquiry) {
 /** 删除询价单 */
 export async function removeInquiry(options?: { [key: string]: any }) {
   console.log(options);
-  return request<Record<string, any>>('/api/enquiry/deleteEnquiryOrder', {
+  return request<Record<string, any>>('/api/enquiry/deleteEnquiryOrders', {
     method: 'POST',
     data: {
       ...(options || {}),

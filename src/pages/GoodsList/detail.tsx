@@ -29,11 +29,12 @@ import moment from 'moment';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
 
+import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import UpdateForm from './eum';
 
 export type tabKeyType = 'skuList' | 'records';
 
-const GoodsImgPreview: React.FC<{ imageList: string[] }> = ({ imageList }) => {
+const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageList }) => {
   const [visible, setVisible] = useState(false);
   if (!imageList) {
     return <></>;
@@ -338,7 +339,11 @@ const DetailPage: FC = () => {
         <Row gutter={24}>
           <Col lg={7} md={24}>
             <Card
-              cover={<GoodsImgPreview imageList={current?.imageUrls} />}
+              cover={
+                <GoodsRibbon goodsType={current?.goodsType}>
+                  <GoodsImgPreview imageList={current?.imageUrls} />
+                </GoodsRibbon>
+              }
               actions={[
                 <UpdateForm
                   values={current}

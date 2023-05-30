@@ -135,6 +135,7 @@ declare namespace API {
     goodsId: number;
     goodsSn: string;
     goodsName: string;
+    goodsType: number;
     imageUrls: string[];
     remark: string;
     depot: string;
