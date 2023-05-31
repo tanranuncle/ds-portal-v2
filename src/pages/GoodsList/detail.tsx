@@ -133,6 +133,21 @@ const DetailPage: FC = () => {
     {
       title: '供应商信息',
       dataIndex: 'suppName',
+      render: (text, row) => {
+        if (row.link.startsWith('http')) {
+          return (
+            <a href={row.link} target="_blank" title={row.link}>
+              text
+            </a>
+          );
+        } else {
+          return (
+            <a title={row.link} onClick={() => message.error('无效链接，请以http开头')}>
+              text
+            </a>
+          );
+        }
+      },
     },
     {
       title: '体积(长*宽*高)',

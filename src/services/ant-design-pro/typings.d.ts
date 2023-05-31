@@ -149,6 +149,7 @@ declare namespace API {
     length: number;
     width: number;
     height: number;
+    link: string;
   };
 
   type FeeCountryConfigType = {

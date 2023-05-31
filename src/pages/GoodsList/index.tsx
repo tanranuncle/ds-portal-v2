@@ -1,7 +1,7 @@
 import { addGoods, fallbackImageData, getGoodsList } from '@/services/apis/goods';
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
-import { ActionType, PageContainer, ProList } from '@ant-design/pro-components';
-import { Button, Image, message, Tag, Tooltip } from 'antd';
+import { ActionType, PageContainer, ProDescriptions, ProList } from '@ant-design/pro-components';
+import { Button, Image, message, Tooltip } from 'antd';
 import { useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
@@ -69,12 +69,25 @@ const GoodsList: FC = () => {
             },
           },
           actions: {
-            render: (text, row) => {
-              return row.goodsTags?.map((label: string) => (
-                <Tag color={label} key={label}>
-                  {label}
-                </Tag>
-              ));
+            render: (_, row) => {
+              // return row.goodsTags?.map((label: string) => (
+              //   <Tag color={label} key={label}>
+              //     {label}
+              //   </Tag>
+              // ));
+              return (
+                <ProDescriptions>
+                  <ProDescriptions.Item
+                    label="收货仓库"
+                    valueEnum={{
+                      yw: { text: '义务仓库' },
+                      gz: { text: '广州仓库' },
+                    }}
+                  >
+                    {row?.depot}
+                  </ProDescriptions.Item>
+                </ProDescriptions>
+              );
             },
           },
         }}
