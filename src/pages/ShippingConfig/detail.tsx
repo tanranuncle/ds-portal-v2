@@ -1,33 +1,14 @@
 import { getShippingConfig, ShippingConfigType } from '@/services/apis/logistic';
-import { UploadOutlined } from '@ant-design/icons';
-import {
-  EditableProTable,
-  ModalForm,
-  PageContainer,
-  ProCard,
-  ProColumns,
-  ProFormField,
-} from '@ant-design/pro-components';
+import { InboxOutlined } from '@ant-design/icons';
+import { ModalForm, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import type { UploadProps } from 'antd';
 import { Button, message, Upload } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useParams } from 'umi';
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
+import template from './resources/template.xlsx';
 export default () => {
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<readonly ShippingConfigType[]>([]);
-  // const [position, setPosition] = useState<'top' | 'bottom' | 'hidden'>(
-  //   'bottom',
-  // );
+  const [current, setCurrent] = useState<readonly ShippingConfigType[]>([]);
 
   const { channelId } = useParams();
 
@@ -35,7 +16,7 @@ export default () => {
     {
       title: '国家/地区',
       dataIndex: 'country',
-      tooltip: '只读，使用form.getFieldValue获取不到值',
+      tooltip: '国家/地区',
       formItemProps: (form, { rowIndex }) => {
         return {
           rules: rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
@@ -115,29 +96,6 @@ export default () => {
       dataIndex: 'extraFee',
       valueType: 'digit',
     },
-    {
-      title: '操作',
-      valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        // <a
-        //   key="delete"
-        //   onClick={() => {
-        //     setDataSource(dataSource.filter((item) => item.id !== record.id));
-        //   }}
-        // >
-        //   删除
-        // </a>,
-      ],
-    },
   ];
 
   const props: UploadProps = {
@@ -160,7 +118,7 @@ export default () => {
 
   return (
     <PageContainer content={' 这个页面只有 admin 权限才能查看'}>
-      <EditableProTable<ShippingConfigType>
+      <ProTable<ShippingConfigType>
         rowKey="id"
         size="small"
         headerTitle={
@@ -168,51 +126,33 @@ export default () => {
             云途全球专线挂号（特惠带电）<div>运输代码:THZXR</div>
           </>
         }
-        maxLength={5}
+        search={false}
         scroll={{
           x: 960,
         }}
-        recordCreatorProps={false}
         loading={false}
         toolBarRender={() => [
           <ModalForm key="inportModal" title="导入" trigger={<Button> 导入 </Button>}>
-            <Upload {...props}>
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
-            </Upload>
-            <a href="#">下载导入模版</a>
+            <Upload.Dragger {...props}>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <p className="ant-upload-hint">
+                运费配置导入将覆盖原有数据，请取保配置数据的完整性！
+              </p>
+              <a href={template} download={'template.xlsx'}>
+                下载导入模版
+              </a>
+            </Upload.Dragger>
           </ModalForm>,
           <Button key="exportBtn" type="primary">
-            {' '}
-            导出{' '}
+            导出
           </Button>,
         ]}
         columns={columns}
         request={(params) => getShippingConfig({ channelId: channelId, ...params })}
-        value={dataSource}
-        onChange={setDataSource}
-        editable={{
-          type: 'multiple',
-          editableKeys,
-          onSave: async (rowKey, data, row) => {
-            console.log(rowKey, data, row);
-            await waitTime(2000);
-          },
-          onChange: setEditableRowKeys,
-        }}
       />
-      <ProCard title="表格数据" headerBordered collapsible defaultCollapsed>
-        <ProFormField
-          ignoreFormItem
-          fieldProps={{
-            style: {
-              width: '100%',
-            },
-          }}
-          mode="read"
-          valueType="jsonCode"
-          text={JSON.stringify(dataSource)}
-        />
-      </ProCard>
     </PageContainer>
   );
 };

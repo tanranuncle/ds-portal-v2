@@ -84,10 +84,6 @@ export async function updateChannel(channel: ChannelType) {
 export async function getShippingConfig(
   params: {
     channelId: string;
-    /** 当前的页码 */
-    current?: number;
-    /** 页面的容量 */
-    pageSize?: number;
   },
   options?: { [key: string]: any },
 ) {
@@ -95,9 +91,6 @@ export async function getShippingConfig(
     '/api/logistic/getChannelDetail/' + params.channelId,
     {
       method: 'GET',
-      data: {
-        ...params,
-      },
       ...(options || {}),
     },
   );
