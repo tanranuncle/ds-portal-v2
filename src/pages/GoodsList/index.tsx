@@ -1,4 +1,4 @@
-import { addGoods, fallbackImageData, getGoodsList } from '@/services/apis/goods';
+import { addGoods, depotEnum, fallbackImageData, getGoodsList } from '@/services/apis/goods';
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProDescriptions, ProList } from '@ant-design/pro-components';
 import { Button, Image, message, Tooltip } from 'antd';
@@ -7,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
 
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
-import UpdateForm from './eum';
+import UpdateForm from './component/eum';
 
 const GoodsList: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -77,13 +77,7 @@ const GoodsList: FC = () => {
               // ));
               return (
                 <ProDescriptions>
-                  <ProDescriptions.Item
-                    label="收货仓库"
-                    valueEnum={{
-                      yw: { text: '义务仓库' },
-                      gz: { text: '广州仓库' },
-                    }}
-                  >
+                  <ProDescriptions.Item label="收货仓库" valueEnum={depotEnum}>
                     {row?.depot}
                   </ProDescriptions.Item>
                 </ProDescriptions>

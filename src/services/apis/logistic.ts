@@ -1,6 +1,15 @@
 import { request } from '@umijs/max';
 import React from 'react';
 
+export const shippingCompanyEnum = {
+  yuntu: {
+    text: '云途物流',
+  },
+  ubi: {
+    text: 'UBI',
+  },
+};
+
 export type ChannelType = {
   recId: React.Key;
   name: string;
@@ -24,7 +33,8 @@ export type ShippingConfigType = {
 
 export async function getChannelList(
   params: {
-    // query
+    company?: string;
+    code?: string;
     /** 当前的页码 */
     current?: number;
     /** 页面的容量 */
@@ -32,9 +42,14 @@ export async function getChannelList(
   },
   options?: { [key: string]: any },
 ) {
+  console.log(params, options);
+  //防止传空字符串，antd protable控件的查询form，text在输入文本后再叉掉会传空字符串
+  if (params.code === '') {
+    params.code = undefined;
+  }
   const response = await request<ChannelType>('/api/logistic/getChannelList', {
     method: 'GET',
-    data: {
+    params: {
       ...params,
     },
     ...(options || {}),
@@ -45,6 +60,21 @@ export async function getChannelList(
 export async function addChannel(channel: ChannelType) {
   const response = await request('/api/logistic/addChannel', {
     method: 'POST',
+    data: channel,
+  });
+  return response;
+}
+
+export async function deleteChannel(channel: ChannelType) {
+  const response = await request('/api/logistic/deleteChannel/' + channel.recId, {
+    method: 'DELETE',
+  });
+  return response;
+}
+
+export async function updateChannel(channel: ChannelType) {
+  const response = await request('/api/logistic/updateChannel', {
+    method: 'PUT',
     data: channel,
   });
   return response;

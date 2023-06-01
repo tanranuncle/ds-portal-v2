@@ -1,3 +1,4 @@
+import { depotEnum } from '@/services/apis/goods';
 import {
   ModalForm,
   ProFormRadio,
@@ -46,7 +47,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       <ProFormSelect
         name="depot"
         label="收获仓库"
-        valueEnum={{ yw: '义务仓库', gz: '广州仓库' }}
+        valueEnum={depotEnum}
         placeholder="请选择收获仓库"
         rules={[{ required: true, message: '请选择收获仓库' }]}
       />

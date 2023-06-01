@@ -4,6 +4,7 @@ import {
   deleteComment,
   deleteGoods,
   deleteSku,
+  depotEnum,
   editGoods,
   fallbackImageData,
   getComment,
@@ -34,7 +35,7 @@ import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-import UpdateForm from './eum';
+import UpdateForm from './component/eum';
 
 export type tabKeyType = 'skuList' | 'records';
 
@@ -137,13 +138,13 @@ const DetailPage: FC = () => {
         if (row.link.startsWith('http')) {
           return (
             <a href={row.link} target="_blank" title={row.link}>
-              text
+              {text}
             </a>
           );
         } else {
           return (
             <a title={row.link} onClick={() => message.error('无效链接，请以http开头')}>
-              text
+              {text}
             </a>
           );
         }
@@ -471,13 +472,7 @@ const DetailPage: FC = () => {
                     {current?.remark}
                     <Divider dashed />
                     <ProDescriptions>
-                      <ProDescriptions.Item
-                        label="收货仓库"
-                        valueEnum={{
-                          yw: { text: '义务仓库' },
-                          gz: { text: '广州仓库' },
-                        }}
-                      >
+                      <ProDescriptions.Item label="收货仓库" valueEnum={depotEnum}>
                         {current?.depot}
                       </ProDescriptions.Item>
                     </ProDescriptions>

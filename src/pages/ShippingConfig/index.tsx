@@ -1,123 +1,149 @@
-import { addChannel, ChannelType, getChannelList } from '@/services/apis/logistic';
+import ShippingConfigCUMF from '@/pages/ShippingConfig/component/cumf';
+import {
+  addChannel,
+  ChannelType,
+  deleteChannel,
+  getChannelList,
+  shippingCompanyEnum,
+  updateChannel,
+} from '@/services/apis/logistic';
+import { PlusOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
-import { ActionType, EditableProTable } from '@ant-design/pro-components';
+import { ActionType, ProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
+import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
 
 export default () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const actionRef = useRef<ActionType>();
 
+  const handleAdd = async (params: ChannelType) => {
+    return addChannel(params).then((x) => {
+      if (x.code === 200) {
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
+  const handleDelete = async (key, params: ChannelType) => {
+    return deleteChannel(params).then((x) => {
+      if (x.code === 200) {
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
+  const handleUpdate = async (key, params: ChannelType) => {
+    return updateChannel(params).then((x) => {
+      if (x.code === 200) {
+        if (actionRef.current) {
+          actionRef.current.reload();
+        }
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
   const columns: ProColumns<ChannelType>[] = [
-    {
-      title: '渠道',
-      dataIndex: 'name',
-      tooltip: '渠道名称',
-      formItemProps: (form, { rowIndex }) => {
-        return {
-          rules: rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
-        };
-      },
-      // 第一行不允许编辑
-      // editable: (text, record, index) => {
-      //   return index !== 0;
-      // },
-      width: '15%',
-    },
-    {
-      title: '运输代码',
-      dataIndex: 'code',
-      tooltip: '代码',
-      //   readonly: true,
-      width: '15%',
-    },
     {
       title: '物流公司',
       dataIndex: 'company',
       valueType: 'select',
-      valueEnum: {
-        // all: { text: '全部', status: 'Default' },
-        yuntu: {
-          text: '云途物流',
-        },
-        ubi: {
-          text: 'UBI',
-        },
+      valueEnum: shippingCompanyEnum,
+    },
+    {
+      title: '渠道',
+      dataIndex: 'name',
+      search: false,
+      width: '15%',
+      formItemProps: (form, { rowIndex }) => {
+        return {
+          rules: [{ required: true, message: '此项为必填项' }],
+        };
+      },
+    },
+    {
+      title: '运输代码',
+      dataIndex: 'code',
+      tooltip: '运输代码',
+      width: '15%',
+      formItemProps: (form, { rowIndex }) => {
+        return {
+          rules: [{ required: true, message: '此项为必填项' }],
+        };
       },
     },
     {
       title: '截件时间',
       dataIndex: 'cutOffTime',
-      fieldProps: (form, { rowKey, rowIndex }) => {
-        if (form.getFieldValue([rowKey || '', 'title']) === '不好玩') {
-          return {
-            disabled: true,
-          };
-        }
-        if (rowIndex > 9) {
-          return {
-            disabled: true,
-          };
-        }
-        return {};
-      },
+      search: false,
     },
     {
       title: '参考时效',
       dataIndex: 'costTime',
+      search: false,
     },
     {
-      title: '价格表',
+      title: '操作',
+      width: 150,
       valueType: 'option',
-      width: 200,
-      render: (_, row) => [
-        <Link key="editable" to={'/admin/config/detail/' + row.recId}>
+      render: (text, record, _, action) => [
+        <Link key="enterPriceTable" to={'/admin/config/detail/' + record.recId}>
           进入价格表
         </Link>,
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.recId);
+          }}
+        >
+          编辑
+        </a>,
       ],
     },
   ];
 
   return (
     <>
-      <EditableProTable<ChannelType>
+      <ProTable<ChannelType>
         actionRef={actionRef}
         rowKey="recId"
-        headerTitle="可编辑表格"
-        maxLength={10}
+        headerTitle="渠道列表"
         scroll={{
           x: 960,
         }}
-        recordCreatorProps={{
-          position: 'bottom',
-          record: () => ({ recId: (Math.random() * 1000000).toFixed(0) }),
-        }}
         loading={false}
-        toolBarRender={() => []}
+        toolBarRender={() => [
+          <ShippingConfigCUMF
+            key={'add'}
+            onFinish={handleAdd}
+            trigger={
+              <Button type={'primary'} icon={<PlusOutlined />}>
+                添加渠道
+              </Button>
+            }
+            title={'编辑'}
+          />,
+        ]}
         columns={columns}
         request={getChannelList}
         editable={{
-          type: 'multiple',
-          editableKeys,
-          onSave: async (rowKey, data, row) => {
-            console.log(rowKey, data, row);
-            addChannel(data).then((x) => {
-              if (x.code === 200) {
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            });
-          },
-          onChange: setEditableRowKeys,
+          type: 'single',
+          onDelete: handleDelete,
+          onSave: handleUpdate,
         }}
       />
     </>

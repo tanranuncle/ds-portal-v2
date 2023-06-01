@@ -1,6 +1,11 @@
 import { request } from '@umijs/max';
 import { message } from 'antd';
 
+export const depotEnum = {
+  yw: { text: '义乌仓库' },
+  gz: { text: '广州仓库' },
+};
+
 /** 获取商品列表 */
 export async function getGoodsList(
   params: {
