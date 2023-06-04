@@ -11,7 +11,7 @@ import {
   getDetail,
   updateSku,
 } from '@/services/apis/goods';
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, EuroCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ActionType,
   GridContent,
@@ -26,7 +26,19 @@ import {
   ProList,
   ProTable,
 } from '@ant-design/pro-components';
-import { Button, Card, Col, Divider, Form, Image, message, Popconfirm, Row, Tag } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Form,
+  Image,
+  message,
+  Popconfirm,
+  Row,
+  Tag,
+  Tooltip,
+} from 'antd';
 import moment from 'moment';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
@@ -462,7 +474,14 @@ const DetailPage: FC = () => {
                 >
                   <DeleteOutlined />
                 </Popconfirm>,
-                <EllipsisOutlined key="ellipsis" />,
+                <Tooltip title="报价">
+                  <EuroCircleOutlined
+                    key="quote"
+                    onClick={() => {
+                      window.open('/goodsQuote/' + current?.goodsSn, '_blank');
+                    }}
+                  />
+                </Tooltip>,
               ]}
             >
               <Card.Meta

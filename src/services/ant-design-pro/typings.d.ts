@@ -136,10 +136,10 @@ declare namespace API {
     goodsSn: string;
     goodsName: string;
     goodsType: number;
-    imageUrls: string[];
-    remark: string;
+    imageUrls?: string[];
+    remark?: string;
     depot: string;
-    skuList: Sku[];
+    skuList?: Sku[];
     goodsTags?: string[];
   };
 

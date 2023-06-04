@@ -7,6 +7,7 @@ import {
 
 import { Link, useParams } from 'umi';
 
+import EllipsisLink from '@/components/EllipsisLink';
 import { InfoCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
@@ -57,6 +58,9 @@ const DetailPage: FC = () => {
     {
       title: '商品链接',
       dataIndex: 'link',
+      render(text, record) {
+        return <EllipsisLink length={40} text={text} link={record.link} target={'_blank'} />;
+      },
     },
     {
       title: '备注',

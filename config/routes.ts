@@ -1,5 +1,6 @@
 export default [
   { path: '/user', layout: false, routes: [{ path: '/user/login', component: './User/Login' }] },
+  { path: '/goodsQuote/:sn', layout: false, component: './Quote' },
   { path: '/welcome', name: 'welcome', icon: 'smile', component: './Welcome', hideInMenu: true },
   // { icon: 'table', name: '查询表单', path: '/list', component: './TableList' },
   { icon: 'euro', name: '询价单', path: '/inquiries', component: './InquiryList' },
