@@ -103,7 +103,7 @@ export async function getShippingConfig(
         r.push({
           country: d.country,
           shippingTime: d.shippingTime,
-          volWeightRate: 8000,
+          volWeightRate: d.volWeightRate,
           ...i,
           id: d.id + '_' + i.id,
           rowSpan: d.id === lastId ? 0 : d.items.length,
@@ -128,4 +128,18 @@ export async function getShippingConfig(
       message: response.message,
     };
   }
+}
+
+export async function exportChannelDetail(channelId) {
+  const response = await request('/api/logistic/exportChannelDetail/' + channelId, {
+    method: 'post',
+    responseType: 'blob',
+    data: {},
+  });
+  var link = document.createElement('a');
+  link.download = 'ChannelDetailExport.xlsx';
+  link.href = window.URL.createObjectURL(response);
+  link.click();
+  window.URL.revokeObjectURL(link.href);
+  return response;
 }

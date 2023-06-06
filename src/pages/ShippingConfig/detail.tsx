@@ -1,16 +1,31 @@
-import { getShippingConfig, ShippingConfigType } from '@/services/apis/logistic';
+import {
+  exportChannelDetail,
+  getShippingConfig,
+  ShippingConfigType,
+} from '@/services/apis/logistic';
 import { InboxOutlined } from '@ant-design/icons';
-import { ModalForm, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
-import type { UploadProps } from 'antd';
+import {
+  ActionType,
+  ModalForm,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from '@ant-design/pro-components';
+import type { UploadFile, UploadProps } from 'antd';
 import { Button, message, Upload } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useParams } from 'umi';
 import template from './resources/template.xlsx';
+
 export default () => {
   const [current, setCurrent] = useState<readonly ShippingConfigType[]>([]);
 
   const { channelId } = useParams();
+
+  const [importModalOpen, updateImportModalOpen] = useState(false);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const actionRef = useRef<ActionType>();
 
   const columns: ProColumns<ShippingConfigType>[] = [
     {
@@ -25,7 +40,6 @@ export default () => {
       // 第一行不允许编辑
       editable: false,
       onCell: (row) => {
-        console.log(row);
         return { rowSpan: row.rowSpan };
       },
       width: '15%',
@@ -33,22 +47,20 @@ export default () => {
     {
       title: '记抛比',
       dataIndex: 'volWeightRate',
-      tooltip: '只读，使用form.getFieldValue可以获取到值',
+      tooltip: '记抛比',
       readonly: true,
       width: '15%',
       onCell: (row, index) => {
-        console.log(index);
         return { rowSpan: row.rowSpan };
       },
     },
     {
       title: '参考时效',
       dataIndex: 'shippingTime',
-      tooltip: '只读，使用form.getFieldValue可以获取到值',
+      tooltip: '参考时效',
       readonly: true,
       width: '15%',
       onCell: (row, index) => {
-        console.log(index);
         return { rowSpan: row.rowSpan };
       },
     },
@@ -100,9 +112,14 @@ export default () => {
 
   const props: UploadProps = {
     name: 'file',
-    action: '/api/config/upload',
+    action: '/api/logistic/importChannelDetail/' + channelId,
     headers: {
-      authorization: 'bearer ' + localStorage.getItem('jwt') || '',
+      Authorization: 'Bearer ' + localStorage.getItem('jwt') || '',
+    },
+    fileList: fileList,
+    beforeUpload: (file) => {
+      setFileList([...fileList, file]);
+      return true;
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
@@ -110,6 +127,9 @@ export default () => {
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} file uploaded successfully`);
+        updateImportModalOpen(false);
+        setFileList([]);
+        actionRef.current?.reload();
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -132,7 +152,21 @@ export default () => {
         }}
         loading={false}
         toolBarRender={() => [
-          <ModalForm key="inportModal" title="导入" trigger={<Button> 导入 </Button>}>
+          <ModalForm
+            open={importModalOpen}
+            key="inportModal"
+            title="导入"
+            trigger={
+              <Button
+                onClick={() => {
+                  updateImportModalOpen(true);
+                }}
+              >
+                {' '}
+                导入{' '}
+              </Button>
+            }
+          >
             <Upload.Dragger {...props}>
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
@@ -146,10 +180,17 @@ export default () => {
               </a>
             </Upload.Dragger>
           </ModalForm>,
-          <Button key="exportBtn" type="primary">
+          <Button
+            key="exportBtn"
+            type="primary"
+            onClick={() => {
+              exportChannelDetail(channelId);
+            }}
+          >
             导出
           </Button>,
         ]}
+        actionRef={actionRef}
         columns={columns}
         request={(params) => getShippingConfig({ channelId: channelId, ...params })}
       />
