@@ -99,6 +99,7 @@ const InquiryList: React.FC = () => {
       title: '客户信息',
       dataIndex: 'customerInfo',
       valueType: 'textarea',
+      ellipsis: true,
     },
     {
       title: '创建时间',
