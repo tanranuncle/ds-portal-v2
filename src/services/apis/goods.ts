@@ -117,7 +117,7 @@ export async function getComment(goodsId: number) {
 export async function addComment(comment) {
   return request<any>('/api/goods/' + comment.goodsId + '/comments', {
     method: 'POST',
-    data: { ...comment, user: 'admin' },
+    data: comment,
   });
 }
 
