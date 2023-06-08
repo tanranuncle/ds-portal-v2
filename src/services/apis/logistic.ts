@@ -8,6 +8,12 @@ export const shippingCompanyEnum = {
   ubi: {
     text: 'UBI',
   },
+  shunyou: {
+    text: '顺友',
+  },
+  yunsudi: {
+    text: '云速递',
+  },
 };
 
 export type ChannelType = {
@@ -53,6 +59,13 @@ export async function getChannelList(
       ...params,
     },
     ...(options || {}),
+  });
+  return response;
+}
+
+export async function getChannel(id) {
+  const response = await request('/api/logistic/channel/' + id, {
+    method: 'GET',
   });
   return response;
 }

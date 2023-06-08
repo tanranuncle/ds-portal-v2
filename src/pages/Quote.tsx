@@ -3,7 +3,7 @@ import { Helmet } from '@@/exports';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Divider, Form, Select, Typography } from 'antd';
+import { Divider, Form, InputNumber, Radio, Select, Space, Typography } from 'antd';
 import React from 'react';
 import { useParams } from 'umi';
 
@@ -62,20 +62,26 @@ const Quote = () => {
             src="https://xiuxiupro-material-center.meitudata.com/poster/8c98b88845630b4afc694e90ca81daa2.png"
           />
         </ProCard>
-        <ProCard title="流量占用情况">
-          <Paragraph>
-            <ul>
-              <li>
-                <Link href="/docs/spec/proximity">Principles</Link>
-              </li>
-              <li>
-                <Link href="/docs/spec/overview">Patterns</Link>
-              </li>
-              <li>
-                <Link href="/docs/resources">Resource Download</Link>
-              </li>
-            </ul>
-          </Paragraph>
+        <ProCard
+          title={
+            <Title level={4}>鸟家户外速干裤男夏季休闲弹力运动短裤骑行裤新款中裤五分裤跨境</Title>
+          }
+        >
+          <Space direction="vertical">
+            <Radio.Group>
+              <Radio.Button value={1}>SKU1</Radio.Button>
+              <Radio.Button value={2}>SKU2</Radio.Button>
+              <Radio.Button value={3}>SKU3</Radio.Button>
+              <Radio.Button value={4}>SKU4</Radio.Button>
+            </Radio.Group>
+            <InputNumber
+              min={1}
+              max={5}
+              style={{ width: '80px' }}
+              defaultValue={1}
+              title={'qty'}
+            ></InputNumber>
+          </Space>
           <Divider dashed />
           <ProDescriptions
             title={
@@ -104,10 +110,13 @@ const Quote = () => {
               </Form>
             }
           >
-            <ProDescriptions.Item label="Vendor">Zesty</ProDescriptions.Item>
-            <ProDescriptions.Item label="Stock Availability">RTS</ProDescriptions.Item>
-            <ProDescriptions.Item label="Referece link">http://www.zesty.com</ProDescriptions.Item>
             <ProDescriptions.Item label="Cost">8$ US</ProDescriptions.Item>
+            <ProDescriptions.Item label="Product Availability">
+              Ready To Ship（RTS）
+            </ProDescriptions.Item>
+            <ProDescriptions.Item label="Shipping days">5-7 working days</ProDescriptions.Item>
+            <ProDescriptions.Item label="Shipping line">UBI</ProDescriptions.Item>
+            <ProDescriptions.Item label="Referece link">http://www.zesty.com</ProDescriptions.Item>
           </ProDescriptions>
         </ProCard>
       </ProCard>

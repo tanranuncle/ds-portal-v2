@@ -1,5 +1,7 @@
 import {
+  ChannelType,
   exportChannelDetail,
+  getChannel,
   getShippingConfig,
   ShippingConfigType,
 } from '@/services/apis/logistic';
@@ -12,16 +14,24 @@ import {
   ProTable,
 } from '@ant-design/pro-components';
 import type { UploadFile, UploadProps } from 'antd';
-import { Button, message, Upload } from 'antd';
-import { useRef, useState } from 'react';
+import { Button, message, Space, Upload } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 
 import { useParams } from 'umi';
 import template from './resources/template.xlsx';
 
 export default () => {
-  const [current, setCurrent] = useState<readonly ShippingConfigType[]>([]);
+  const [current, setCurrent] = useState<ChannelType>();
 
   const { channelId } = useParams();
+
+  useEffect(() => {
+    getChannel(channelId).then((value) => {
+      if (value.code === 200) {
+        setCurrent(value.data);
+      }
+    });
+  }, []);
 
   const [importModalOpen, updateImportModalOpen] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -142,9 +152,10 @@ export default () => {
         rowKey="id"
         size="small"
         headerTitle={
-          <>
-            云途全球专线挂号（特惠带电）<div>运输代码:THZXR</div>
-          </>
+          <Space>
+            <span>{current?.name}</span>
+            <span>运输代码:{current?.code}</span>
+          </Space>
         }
         search={false}
         scroll={{
