@@ -129,7 +129,7 @@ const Login: React.FC = () => {
           title={<img style={{ width: '200px', height: '60px' }} alt="logo" src="/logo.png" />}
           subTitle={
             <Text>
-              <Title>Zesty Background</Title> 是杭州最具潜力的 Drop Shopping 服务商
+              <Title level={2}>Zesty Background</Title> 是杭州最具潜力的 Drop Shopping 服务商
             </Text>
           }
           initialValues={{
