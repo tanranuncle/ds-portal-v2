@@ -9,18 +9,16 @@ import {
   UserOutlined,
   WeiboCircleOutlined,
 } from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { LoginForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import { Alert, message, Typography } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
+
+const { Text, Title } = Typography;
+
 const ActionIcons = () => {
   const langClassName = useEmotionCss(({ token }) => {
     return {
@@ -128,32 +126,35 @@ const Login: React.FC = () => {
             minWidth: 280,
             maxWidth: '75vw',
           }}
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
+          title={<img style={{ width: '200px', height: '60px' }} alt="logo" src="/logo.png" />}
+          subTitle={
+            <Text>
+              <Title>Zesty Background</Title> 是杭州最具潜力的 Drop Shopping 服务商
+            </Text>
+          }
           initialValues={{
             autoLogin: true,
           }}
-          actions={['其他登录方式 :', <ActionIcons key="icons" />]}
+          // actions={['其他登录方式 :', <ActionIcons key="icons" />]}
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-          <Tabs
-            activeKey={type}
-            onChange={setType}
-            centered
-            items={[
-              {
-                key: 'account',
-                label: '账户密码登录',
-              },
-              {
-                key: 'mobile',
-                label: '手机号登录',
-              },
-            ]}
-          />
+          {/*<Tabs*/}
+          {/*  activeKey={type}*/}
+          {/*  onChange={setType}*/}
+          {/*  centered*/}
+          {/*  items={[*/}
+          {/*    {*/}
+          {/*      key: 'account',*/}
+          {/*      label: '账户密码登录',*/}
+          {/*    },*/}
+          {/*    {*/}
+          {/*      key: 'mobile',*/}
+          {/*      label: '手机号登录',*/}
+          {/*    },*/}
+          {/*  ]}*/}
+          {/*/>*/}
 
           {status === 'error' && loginType === 'account' && (
             <LoginMessage content={'错误的用户名和密码'} />
@@ -246,22 +247,22 @@ const Login: React.FC = () => {
               />
             </>
           )}
-          <div
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            <ProFormCheckbox noStyle name="autoLogin">
-              自动登录
-            </ProFormCheckbox>
-            <a
-              style={{
-                float: 'right',
-              }}
-            >
-              忘记密码 ?
-            </a>
-          </div>
+          {/*<div*/}
+          {/*  style={{*/}
+          {/*    marginBottom: 24,*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <ProFormCheckbox noStyle name="autoLogin">*/}
+          {/*    自动登录*/}
+          {/*  </ProFormCheckbox>*/}
+          {/*  <a*/}
+          {/*    style={{*/}
+          {/*      float: 'right',*/}
+          {/*    }}*/}
+          {/*  >*/}
+          {/*    忘记密码 ?*/}
+          {/*  </a>*/}
+          {/*</div>*/}
         </LoginForm>
       </div>
       <Footer />

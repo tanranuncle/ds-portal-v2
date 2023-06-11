@@ -1,6 +1,33 @@
 import { request } from '@umijs/max';
 import React from 'react';
 
+export const CountryOptions = [
+  {
+    value: 'US',
+    label: 'US',
+  },
+  {
+    value: 'CA',
+    label: 'CA',
+  },
+  {
+    value: 'AU',
+    label: 'AU',
+  },
+  {
+    value: 'GB',
+    label: 'GB',
+  },
+  {
+    value: 'DE',
+    label: 'DE',
+  },
+  {
+    value: 'FR',
+    label: 'FR',
+  },
+];
+
 export const shippingCompanyEnum = {
   yuntu: {
     text: '云途物流',
