@@ -90,15 +90,18 @@ const Quote = () => {
         </ProCard>
         <ProCard title={<Title level={4}>{current?.goodsVo?.goodsName}</Title>}>
           <Tooltip
+            placement="topLeft"
             title={
+              'product:$' +
               current?.result.baseFee +
-              '+' +
+              '\nshipping:$' +
               current?.result.operationFee +
-              'volWeight:' +
+              '\nvolWeight:' +
               current?.result.volWeight +
-              'ActWeight:' +
+              'g' +
+              '\nActWeight:' +
               current?.result.actWeight +
-              'shippingFee'
+              'g'
             }
           >
             <Title level={2}>$ {current?.result.totalFee}</Title>
