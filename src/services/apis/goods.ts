@@ -140,3 +140,21 @@ export function quote(goodsSn: string, qStr: string) {
     method: 'GET',
   });
 }
+
+/**
+ * 导出sku列表
+ * @param goodsId
+ */
+export async function exportSkuList(goodsId) {
+  const response = await request('/api/goods/exportSkuList/' + goodsId, {
+    method: 'post',
+    responseType: 'blob',
+    data: {},
+  });
+  var link = document.createElement('a');
+  link.download = 'SkuListExport.xlsx';
+  link.href = window.URL.createObjectURL(response);
+  link.click();
+  window.URL.revokeObjectURL(link.href);
+  return response;
+}
