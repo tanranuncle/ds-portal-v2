@@ -12,13 +12,15 @@ import { InfoCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   PageContainer,
+  ProForm,
   ProFormText,
-  ProFormTextArea,
   ProTable,
 } from '@ant-design/pro-components';
 import { Button, Card, Descriptions, Divider, Form, Input, message, Modal, Radio, Tag } from 'antd';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const DetailPage: FC = () => {
   const [current, setCurrent] = useState<Partial<API.InquiryDetail> | undefined>(undefined);
@@ -54,6 +56,7 @@ const DetailPage: FC = () => {
     {
       title: '商品名称',
       dataIndex: 'goodsName',
+      ellipsis: true,
     },
     {
       title: '商品链接',
@@ -65,6 +68,15 @@ const DetailPage: FC = () => {
     {
       title: '备注',
       dataIndex: 'remark',
+      render: (_, row) => {
+        return (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `${row.remark.replaceAll('\n', '</br>')}`,
+            }}
+          ></div>
+        );
+      },
     },
     {
       title: '关联供货SN',
@@ -140,6 +152,18 @@ const DetailPage: FC = () => {
     setIsModalOpen(false);
   };
 
+  /*富文本编辑*/
+  const [remarkContent, setRemarkContent] = useState('');
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  };
+
   return (
     <div>
       <PageContainer>
@@ -186,7 +210,7 @@ const DetailPage: FC = () => {
                 }}
                 submitTimeout={2000}
                 onFinish={async (values: API.InquiryItem) => {
-                  await addInquiryItem(values);
+                  await addInquiryItem({ ...values, remark: remarkContent });
                   loadData();
                   message.success('提交成功');
                   return true;
@@ -197,6 +221,7 @@ const DetailPage: FC = () => {
                   name="goodsName"
                   width="md"
                   label="商品名称"
+                  fieldProps={{ maxLength: 1000, showCount: true }}
                   required
                   placeholder="填写客户方的商品名称"
                 />
@@ -206,7 +231,19 @@ const DetailPage: FC = () => {
                   required
                   placeholder="填写客户方的商品链接"
                 />
-                <ProFormTextArea name="remark" label="备注" />
+                <ProForm.Item
+                  label="备注"
+                  name="remark"
+                  rules={[{ required: true, message: '请输入记录' }]}
+                  style={{ height: 400 }}
+                >
+                  <ReactQuill
+                    style={{ height: 330 }}
+                    modules={quillModules}
+                    value={remarkContent}
+                    onChange={setRemarkContent}
+                  />
+                </ProForm.Item>
               </ModalForm>,
             ]}
           />

@@ -6,6 +6,7 @@ import {
   deleteSku,
   depotEnum,
   editGoods,
+  exportSkuList,
   fallbackImageData,
   getComment,
   getDetail,
@@ -51,7 +52,7 @@ import UpdateForm from './component/eum';
 
 export type tabKeyType = 'skuList' | 'records';
 
-const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageList }) => {
+const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageList, width }) => {
   const [visible, setVisible] = useState(false);
   if (!imageList) {
     return <></>;
@@ -59,6 +60,7 @@ const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageL
     return (
       <>
         <Image
+          width={width ? width : 440}
           preview={{ visible: false }}
           src={imageList[0]}
           fallback={fallbackImageData()}
@@ -140,6 +142,17 @@ const DetailPage: FC = () => {
       dataIndex: 'skuName',
     },
     {
+      title: '图片',
+      dataIndex: 'skuImage',
+      render: (text, row) => {
+        if (row.skuImage.startsWith('http')) {
+          return <GoodsImgPreview width={50} imageList={[row.skuImage]} />;
+        } else {
+          return <div></div>;
+        }
+      },
+    },
+    {
       title: '供方skuId',
       dataIndex: 'suppSkuId',
     },
@@ -163,7 +176,7 @@ const DetailPage: FC = () => {
       },
     },
     {
-      title: '体积(长*宽*高)',
+      title: '计费体积(长*宽*高)',
       render: (_, row) => {
         return (
           <>
@@ -174,7 +187,7 @@ const DetailPage: FC = () => {
       search: false,
     },
     {
-      title: '重量(kg)',
+      title: '计费重量(kg)',
       dataIndex: 'weight',
       render: (text) => {
         return text + ' kg';
@@ -293,6 +306,13 @@ const DetailPage: FC = () => {
                 placeholder="填写sku链接"
                 rules={[{ required: true, message: 'sku链接为必填项' }]}
               />
+              <ProFormText
+                name="skuImage"
+                label="图片"
+                required={false}
+                placeholder="填写sku图片"
+                rules={[{ required: false, message: 'sku图片为必填项' }]}
+              />
               <ProForm.Group>
                 <ProFormDigit
                   label="长"
@@ -329,6 +349,15 @@ const DetailPage: FC = () => {
               </ProForm.Group>
               <ProFormTextArea name="remark" label="备注" />
             </ModalForm>,
+            <Button
+              key="exportBtn"
+              type="primary"
+              onClick={() => {
+                exportSkuList(current?.goodsId);
+              }}
+            >
+              导出
+            </Button>,
           ]}
         />
       );
