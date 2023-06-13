@@ -32,13 +32,17 @@ export async function getInitialState(): Promise<{
   };
   // 如果不是登录页面，执行
   const { location } = history;
-  if (location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: defaultSettings as Partial<LayoutSettings>,
-    };
+  if (location.pathname !== loginPath && !location.pathname.startsWith('/goodsQuote')) {
+    if (!localStorage.getItem('jwt')) {
+      history.push(loginPath);
+    } else {
+      const currentUser = await fetchUserInfo();
+      return {
+        fetchUserInfo,
+        currentUser,
+        settings: defaultSettings as Partial<LayoutSettings>,
+      };
+    }
   }
   return {
     fetchUserInfo,

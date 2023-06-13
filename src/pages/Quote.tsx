@@ -1,4 +1,5 @@
 import { Footer } from '@/components';
+import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import { quote } from '@/services/apis/goods';
 import { CountryOptions } from '@/services/apis/logistic';
 import { Helmet } from '@@/exports';
@@ -82,11 +83,13 @@ const Quote = () => {
         headerBordered
       >
         <ProCard colSpan="30%">
-          <img
-            alt="example"
-            style={{ borderRadius: '10%', width: '360px', height: '360px' }}
-            src={current?.goodsVo?.goodsImage}
-          />
+          <GoodsRibbon goodsType={current?.goodsVo.goodsType}>
+            <img
+              alt="example"
+              style={{ borderRadius: '10%', width: '360px', height: '360px' }}
+              src={current?.goodsVo?.goodsImage}
+            />
+          </GoodsRibbon>
         </ProCard>
         <ProCard title={<Title level={4}>{current?.goodsVo?.goodsName}</Title>}>
           <Tooltip
