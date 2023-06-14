@@ -41,6 +41,9 @@ export const shippingCompanyEnum = {
   yunsudi: {
     text: '云速递',
   },
+  hzjinmai: {
+    text: '杭州金麦',
+  },
 };
 
 export type ChannelType = {
