@@ -60,7 +60,7 @@ const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageL
     return (
       <>
         <Image
-          width={width ? width : 440}
+          width={width ? width : '100%'}
           preview={{ visible: false }}
           src={imageList[0]}
           fallback={fallbackImageData()}
