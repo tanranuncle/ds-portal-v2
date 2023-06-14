@@ -29,19 +29,19 @@ export const CountryOptions = [
 ];
 
 export const shippingCompanyEnum = {
-  yuntu: {
+  YunExpress: {
     text: '云途物流',
   },
-  ubi: {
+  UBI: {
     text: 'UBI',
   },
-  shunyou: {
+  Sunyou: {
     text: '顺友',
   },
-  yunsudi: {
+  YunsuExpress: {
     text: '云速递',
   },
-  hzjinmai: {
+  SDH: {
     text: '杭州金麦',
   },
 };
