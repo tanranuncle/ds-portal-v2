@@ -279,7 +279,12 @@ const DetailPage: FC = () => {
                   placeholder="填写sku名称"
                   rules={[{ required: true, message: 'sku名称为必填项' }]}
                 />
-                <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
+                <ProFormText
+                  name="skuNameEn"
+                  label="sku名称(EN)"
+                  placeholder="填写sku名称(EN)"
+                  rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
+                />
               </ProForm.Group>
               <ProForm.Group>
                 <ProFormDigit
@@ -291,6 +296,7 @@ const DetailPage: FC = () => {
                   fieldProps={{ precision: 2 }}
                   rules={[{ required: true, message: '采购价为必填项' }]}
                 />
+                <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
               </ProForm.Group>
               <ProFormText
                 name="suppName"
@@ -517,7 +523,11 @@ const DetailPage: FC = () => {
                 title={current?.goodsName}
                 description={
                   <>
-                    {current?.remark}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: `${current?.remark.replaceAll('\n', '</br>')}`,
+                      }}
+                    ></div>
                     <Divider dashed />
                     <ProDescriptions>
                       <ProDescriptions.Item label="收货仓库" valueEnum={depotEnum}>

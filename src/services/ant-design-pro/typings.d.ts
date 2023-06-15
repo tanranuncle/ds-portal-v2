@@ -135,9 +135,11 @@ declare namespace API {
     goodsId: number;
     goodsSn: string;
     goodsName: string;
+    goodsNameEn: string;
     goodsType: number;
     imageUrls?: string[];
     remark?: string;
+    remarkEn?: string;
     depot: string;
     skuList?: Sku[];
     goodsTags?: string[];
@@ -146,6 +148,7 @@ declare namespace API {
   type Sku = {
     skuId: number;
     skuName: string;
+    skuNameEn: string;
     length: number;
     width: number;
     height: number;

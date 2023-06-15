@@ -1,12 +1,14 @@
 import { depotEnum } from '@/services/apis/goods';
 import {
   ModalForm,
+  ProForm,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
-  ProFormTextArea,
 } from '@ant-design/pro-components';
-import React from 'react';
+import React, { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export type UpdateFormProps = {
   onCancel?: (flag?: boolean, formVals?: API.Goods) => void;
@@ -18,6 +20,19 @@ export type UpdateFormProps = {
 };
 
 const UpdateForm: React.FC<UpdateFormProps> = (props) => {
+  /*富文本编辑*/
+  const [remarkContent, setRemarkContent] = useState('');
+  const [remarkEnContent, setRemarkEnContent] = useState('');
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+      ['link', 'image', 'video'],
+      ['clean'],
+    ],
+  };
+
   return (
     <ModalForm
       title={props.title}
@@ -26,6 +41,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       trigger={props.trigger}
       onFinish={props.onFinish}
       initialValues={props.values}
+      onOpenChange={(visible) => {
+        if (visible) {
+          setRemarkContent(props.values?.remark);
+          setRemarkEnContent(props.values?.remarkEn);
+        }
+      }}
     >
       <ProFormText hidden={true} width="md" name="goodsId" label="商品ID" />
       <ProFormText
@@ -33,6 +54,12 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         width="md"
         name="goodsName"
         label="商品名称"
+      />
+      <ProFormText
+        rules={[{ required: false, message: '商品英文名称为非必填项' }]}
+        width="md"
+        name="goodsNameEn"
+        label="商品名称(EN)"
       />
       <ProFormRadio.Group
         name="goodsType"
@@ -57,7 +84,32 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         label="商品图片链接"
         placeholder="http://"
       />
-      <ProFormTextArea name="remark" label="商品描述" />
+      <ProForm.Item
+        label="商品描述"
+        name="remark"
+        rules={[{ required: false, message: '请输入商品描述' }]}
+        style={{ height: 300 }}
+      >
+        <ReactQuill
+          style={{ height: 200 }}
+          modules={quillModules}
+          value={remarkContent}
+          onChange={setRemarkContent}
+        />
+      </ProForm.Item>
+      <ProForm.Item
+        label="商品描述(EN)"
+        name="remarkEn"
+        rules={[{ required: false, message: '请输入商品描述(EN)' }]}
+        style={{ height: 300 }}
+      >
+        <ReactQuill
+          style={{ height: 200 }}
+          modules={quillModules}
+          value={remarkEnContent}
+          onChange={setRemarkEnContent}
+        />
+      </ProForm.Item>
     </ModalForm>
   );
 };
