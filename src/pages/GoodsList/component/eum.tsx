@@ -6,6 +6,7 @@ import {
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
+import { Tabs } from 'antd';
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -37,7 +38,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
     <ModalForm
       title={props.title}
       key="addProduct"
-      width="600px"
+      width="800px"
       trigger={props.trigger}
       onFinish={props.onFinish}
       initialValues={props.values}
@@ -49,18 +50,20 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       }}
     >
       <ProFormText hidden={true} width="md" name="goodsId" label="商品ID" />
-      <ProFormText
-        rules={[{ required: true, message: '商品名称为必填项' }]}
-        width="md"
-        name="goodsName"
-        label="商品名称"
-      />
-      <ProFormText
-        rules={[{ required: false, message: '商品英文名称为非必填项' }]}
-        width="md"
-        name="goodsNameEn"
-        label="商品名称(EN)"
-      />
+      <ProForm.Group>
+        <ProFormText
+          rules={[{ required: true, message: '商品名称为必填项' }]}
+          width="md"
+          name="goodsName"
+          label="商品名称"
+        />
+        <ProFormText
+          rules={[{ required: false, message: '商品英文名称为非必填项' }]}
+          width="md"
+          name="goodsNameEn"
+          label="商品名称(EN)"
+        />
+      </ProForm.Group>
       <ProFormRadio.Group
         name="goodsType"
         label="商品类型"
@@ -71,45 +74,69 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           { label: '特货', value: 3 },
         ]}
       />
-      <ProFormSelect
-        name="depot"
-        label="收获仓库"
-        valueEnum={depotEnum}
-        placeholder="请选择收获仓库"
-        rules={[{ required: true, message: '请选择收获仓库' }]}
-      />
+      <ProForm.Group>
+        <ProFormSelect
+          name="depot"
+          label="收获仓库"
+          width="md"
+          valueEnum={depotEnum}
+          placeholder="请选择收获仓库"
+          rules={[{ required: true, message: '请选择收获仓库' }]}
+        />
+        {/*<ProFormText*/}
+        {/*  width="md"*/}
+        {/*  name="carrier"*/}
+        {/*  label="物流线路"*/}
+        {/*  placeholder="请填写运输代码，如：THPHR"*/}
+        {/*/>*/}
+      </ProForm.Group>
       <ProFormText
         rules={[{ required: true, message: '请填入商品图片链接' }]}
         name="goodsImage"
         label="商品图片链接"
         placeholder="http://"
       />
-      <ProForm.Item
-        label="商品描述"
-        name="remark"
-        rules={[{ required: false, message: '请输入商品描述' }]}
-        style={{ height: 300 }}
-      >
-        <ReactQuill
-          style={{ height: 200 }}
-          modules={quillModules}
-          value={remarkContent}
-          onChange={setRemarkContent}
-        />
-      </ProForm.Item>
-      <ProForm.Item
-        label="商品描述(EN)"
-        name="remarkEn"
-        rules={[{ required: false, message: '请输入商品描述(EN)' }]}
-        style={{ height: 300 }}
-      >
-        <ReactQuill
-          style={{ height: 200 }}
-          modules={quillModules}
-          value={remarkEnContent}
-          onChange={setRemarkEnContent}
-        />
-      </ProForm.Item>
+      <Tabs
+        defaultActiveKey="1"
+        items={[
+          {
+            key: '1',
+            label: '商品描述',
+            children: (
+              <ProForm.Item
+                name="remark"
+                rules={[{ required: false, message: '请输入商品描述' }]}
+                style={{ height: '280px' }}
+              >
+                <ReactQuill
+                  style={{ height: '260px' }}
+                  modules={quillModules}
+                  value={remarkContent}
+                  onChange={setRemarkContent}
+                />
+              </ProForm.Item>
+            ),
+          },
+          {
+            key: '2',
+            label: '商品描述(EN)',
+            children: (
+              <ProForm.Item
+                name="remarkEn"
+                rules={[{ required: false, message: '请输入商品描述(EN)' }]}
+                style={{ height: '280px' }}
+              >
+                <ReactQuill
+                  style={{ height: '260px' }}
+                  modules={quillModules}
+                  value={remarkEnContent}
+                  onChange={setRemarkEnContent}
+                />
+              </ProForm.Item>
+            ),
+          },
+        ]}
+      ></Tabs>
     </ModalForm>
   );
 };

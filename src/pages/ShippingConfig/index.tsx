@@ -101,7 +101,7 @@ export default () => {
       width: 150,
       valueType: 'option',
       render: (text, record, _, action) => [
-        <Link key="enterPriceTable" to={'/admin/config/detail/' + record.recId}>
+        <Link key="enterPriceTable" to={'/admin/config/detail/' + record.code}>
           进入价格表
         </Link>,
         <a

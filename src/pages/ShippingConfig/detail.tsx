@@ -23,10 +23,10 @@ import template from './resources/template.xlsx';
 export default () => {
   const [current, setCurrent] = useState<ChannelType>();
 
-  const { channelId } = useParams();
+  const { code } = useParams();
 
   useEffect(() => {
-    getChannel(channelId).then((value) => {
+    getChannel(code).then((value) => {
       if (value.code === 200) {
         setCurrent(value.data);
       }
@@ -122,7 +122,7 @@ export default () => {
 
   const props: UploadProps = {
     name: 'file',
-    action: '/api/logistic/importChannelDetail/' + channelId,
+    action: '/api/logistic/importChannelDetail/' + current?.recId,
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('jwt') || '',
     },
@@ -165,6 +165,11 @@ export default () => {
         toolBarRender={() => [
           <ModalForm
             open={importModalOpen}
+            modalProps={{
+              onCancel: () => {
+                updateImportModalOpen(false);
+              },
+            }}
             key="inportModal"
             title="导入"
             trigger={
@@ -195,7 +200,7 @@ export default () => {
             key="exportBtn"
             type="primary"
             onClick={() => {
-              exportChannelDetail(channelId);
+              exportChannelDetail(current?.recId);
             }}
           >
             导出
@@ -203,7 +208,7 @@ export default () => {
         ]}
         actionRef={actionRef}
         columns={columns}
-        request={(params) => getShippingConfig({ channelId: channelId, ...params })}
+        request={(params) => getShippingConfig({ channelCode: code, ...params })}
       />
     </PageContainer>
   );

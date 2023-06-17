@@ -29,7 +29,7 @@ export default [
       { path: '/admin/users', name: '用户管理', component: './Admin' },
       { path: '/admin/config', name: '运费配置', component: './ShippingConfig' },
       {
-        path: '/admin/config/detail/:channelId',
+        path: '/admin/config/detail/:code',
         hideInMenu: true,
         name: '配置详情',
         component: './ShippingConfig/detail',

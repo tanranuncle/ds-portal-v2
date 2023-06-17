@@ -52,7 +52,10 @@ import UpdateForm from './component/eum';
 
 export type tabKeyType = 'skuList' | 'records';
 
-const GoodsImgPreview: React.FC<{ imageList: string[] | undefined }> = ({ imageList, width }) => {
+const GoodsImgPreview: React.FC<{ imageList: string[] | undefined; width?: string | number }> = ({
+  imageList,
+  width,
+}) => {
   const [visible, setVisible] = useState(false);
   if (!imageList) {
     return <></>;
@@ -146,7 +149,7 @@ const DetailPage: FC = () => {
       dataIndex: 'skuImage',
       render: (text, row) => {
         if (row.skuImage.startsWith('http')) {
-          return <GoodsImgPreview width={50} imageList={[row.skuImage]} />;
+          return <Image width={48} src={row.skuImage} />;
         } else {
           return <div></div>;
         }

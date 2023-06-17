@@ -6,7 +6,7 @@ import { Helmet } from '@@/exports';
 import ProCard from '@ant-design/pro-card';
 import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Divider, Form, InputNumber, Radio, Select, Space, Tooltip, Typography } from 'antd';
+import { Divider, Form, Input, InputNumber, Radio, Select, Space, Tooltip, Typography } from 'antd';
 import React from 'react';
 import { history, useLocation, useParams } from 'umi';
 
@@ -32,6 +32,7 @@ const Quote = () => {
       country: res.data?.country,
       quantity: res.data?.quantity,
       skuId: res.data?.currentSku.skuId,
+      carrierCode: res.data?.result.carrierCode,
     };
     form.setFieldsValue(values);
   };
@@ -49,7 +50,9 @@ const Quote = () => {
         '&quantity=' +
         form.getFieldValue('quantity') +
         '&skuId=' +
-        form.getFieldValue('skuId'),
+        form.getFieldValue('skuId') +
+        '&carrierCode=' +
+        form.getFieldValue('carrierCode'),
     });
   };
 
@@ -91,7 +94,7 @@ const Quote = () => {
             />
           </GoodsRibbon>
         </ProCard>
-        <ProCard title={<Title level={4}>{current?.goodsVo?.goodsName}</Title>}>
+        <ProCard title={<Title level={4}>{current?.goodsVo?.goodsNameEn}</Title>}>
           <Tooltip
             placement="topLeft"
             title={
@@ -109,20 +112,34 @@ const Quote = () => {
           >
             <Title level={2}>$ {current?.result.totalFee}</Title>
           </Tooltip>
-          <ProDescriptions>
+          <ProDescriptions
+            editable={{
+              onSave: async (keypath, newInfo, oriInfo) => {
+                form.setFieldValue('carrierCode', newInfo[keypath]);
+                onFormChanged();
+                return true;
+              },
+            }}
+          >
             <ProDescriptions.Item label="Product Availability">
               Ready To Ship（RTS）
             </ProDescriptions.Item>
             <ProDescriptions.Item label="Shipping days">
               {current?.result.time}
             </ProDescriptions.Item>
-            <ProDescriptions.Item label="Shipping line">
-              {current?.result.carrierName}
+            <ProDescriptions.Item label="Shipping Company">
+              {current?.result.carrierCompany}
+            </ProDescriptions.Item>
+            <ProDescriptions.Item label="Shipping line" valueType="text">
+              {current?.result.carrierCode}
             </ProDescriptions.Item>
           </ProDescriptions>
           <Link href="http://www.zesty.com">Reference link</Link>
           <Divider dashed />
           <Form form={form}>
+            <Form.Item name="carrierCode" hidden={true}>
+              <Input />
+            </Form.Item>
             <Form.Item label="Country" name="country">
               <Select
                 placeholder="Select a country"
@@ -136,7 +153,7 @@ const Quote = () => {
                 {current?.goodsVo?.skuList.map((item: any) => {
                   return (
                     <Radio.Button key={item.skuId} value={item.skuId}>
-                      {item.skuName}
+                      {item.skuNameEn}
                     </Radio.Button>
                   );
                 })}

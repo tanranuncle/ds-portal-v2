@@ -90,11 +90,11 @@ export async function getChannelList(
     },
     ...(options || {}),
   });
-  return response;
+  return { data: response.data.list, total: response.data.total };
 }
 
-export async function getChannel(id) {
-  const response = await request('/api/logistic/channel/' + id, {
+export async function getChannel(code) {
+  const response = await request('/api/logistic/channel/' + code, {
     method: 'GET',
   });
   return response;
@@ -126,12 +126,12 @@ export async function updateChannel(channel: ChannelType) {
 /** 获取配置详情 */
 export async function getShippingConfig(
   params: {
-    channelId: string;
+    channelCode: string;
   },
   options?: { [key: string]: any },
 ) {
   const response = await request<API.FeeCountryConfigType>(
-    '/api/logistic/getChannelDetail/' + params.channelId,
+    '/api/logistic/getChannelDetail/' + params.channelCode,
     {
       method: 'GET',
       ...(options || {}),
