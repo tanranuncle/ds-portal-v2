@@ -57,6 +57,15 @@ const GoodsList: FC = () => {
           },
           content: {
             dataIndex: 'remark',
+            render: (_, row) => {
+              return (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: `${row.remark.replaceAll('\n', '</br>')}`,
+                  }}
+                ></div>
+              );
+            },
           },
           extra: {
             dataIndex: 'goodsImage',
