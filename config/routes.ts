@@ -27,13 +27,14 @@ export default [
     routes: [
       { path: '/admin', redirect: '/admin/users' },
       { path: '/admin/users', name: '用户管理', component: './Admin' },
-      { path: '/admin/config', name: '运费配置', component: './ShippingConfig' },
+      { path: '/admin/shippingConfig', name: '运费配置', component: './ShippingConfig' },
       {
-        path: '/admin/config/detail/:code',
+        path: '/admin/shippingConfig/detail/:code',
         hideInMenu: true,
         name: '配置详情',
         component: './ShippingConfig/detail',
       },
+      { path: '/admin/paramsConfig', name: '参数配置', component: './ParamsConfig' },
     ],
   },
 ];

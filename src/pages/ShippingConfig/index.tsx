@@ -9,7 +9,7 @@ import {
 } from '@/services/apis/logistic';
 import { PlusOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
-import { ActionType, ProTable } from '@ant-design/pro-components';
+import { ActionType, PageContainer, ProTable } from '@ant-design/pro-components';
 import { Link } from '@umijs/max';
 import { Button } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -117,7 +117,7 @@ export default () => {
   ];
 
   return (
-    <>
+    <PageContainer>
       <ProTable<ChannelType>
         actionRef={actionRef}
         rowKey="recId"
@@ -146,6 +146,6 @@ export default () => {
           onSave: handleUpdate,
         }}
       />
-    </>
+    </PageContainer>
   );
 };

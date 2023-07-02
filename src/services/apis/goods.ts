@@ -147,6 +147,19 @@ export function quote(goodsSn: string, qStr: string) {
   });
 }
 
+export function getQuoteConfig() {
+  return request<any>('/api/quote/config', {
+    method: 'GET',
+  });
+}
+
+export function updateQuoteConfig(key: string, value: string) {
+  return request<any>('/api/quote/config/' + key, {
+    method: 'PUT',
+    data: { value: value },
+  });
+}
+
 /**
  * 导出sku列表
  * @param goodsId
