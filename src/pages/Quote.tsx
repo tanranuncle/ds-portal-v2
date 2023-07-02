@@ -128,16 +128,8 @@ const Quote = () => {
               >
                 <Title level={2}>$ {current?.result.totalFee}</Title>
               </Tooltip>
-              <ProDescriptions
-                editable={{
-                  onSave: async (keypath, newInfo, oriInfo) => {
-                    form.setFieldValue('carrierCode', newInfo[keypath]);
-                    onFormChanged();
-                    return true;
-                  },
-                }}
-              >
-                <ProDescriptions.Item label="Product Availability">
+              <ProDescriptions>
+                <ProDescriptions.Item label="Availability">
                   {tagEnumMap[current?.availability]?.desc}
                 </ProDescriptions.Item>
                 <ProDescriptions.Item label="Processing days">
