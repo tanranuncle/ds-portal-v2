@@ -192,18 +192,22 @@ const Quote = () => {
             </ProCard>
           </Col>
         </Row>
-        <Divider orientation="left">Description</Divider>
-        <Row gutter={24}>
-          <Col lg={24} md={24}>
-            <ProCard bordered={true}>
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: `${current?.goodsVo?.remarkEn?.replaceAll('\n', '</br>')}`,
-                }}
-              ></div>
-            </ProCard>
-          </Col>
-        </Row>
+        {current?.goodsVo?.remarkEn ? (
+          <>
+            <Divider orientation="left">Description</Divider>
+            <Row gutter={24}>
+              <Col lg={24} md={24}>
+                <ProCard bordered={true}>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: `${current?.goodsVo?.remarkEn?.replaceAll('\n', '</br>')}`,
+                    }}
+                  ></div>
+                </ProCard>
+              </Col>
+            </Row>
+          </>
+        ) : null}
       </GridContent>
       <Footer />
     </PageContainer>

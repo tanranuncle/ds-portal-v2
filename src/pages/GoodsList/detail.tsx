@@ -4,6 +4,7 @@ import {
   editGoods,
   fallbackImageData,
   getDetail,
+  tagEnumMap,
 } from '@/services/apis/goods';
 import { DeleteOutlined, EditOutlined, EuroCircleOutlined } from '@ant-design/icons';
 import { GridContent, PageContainer, ProDescriptions } from '@ant-design/pro-components';
@@ -70,11 +71,11 @@ const DetailPage: FC = () => {
     if (tabValue === 'skuList') {
       return <SkuTable loadData={loadData} current={current} />;
     }
-    if (tabValue === 'records') {
-      return <CommentTable goodsId={current.goodsId} />;
-    }
     if (tabValue === 'channels') {
       return <GoodsChannelTable goodsId={current.goodsId} />;
+    }
+    if (tabValue === 'records') {
+      return <CommentTable goodsId={current.goodsId} />;
     }
     return null;
   };
@@ -141,11 +142,15 @@ const DetailPage: FC = () => {
                       dangerouslySetInnerHTML={{
                         __html: `${current?.remark.replaceAll('\n', '</br>')}`,
                       }}
+                      style={{ height: '100px', overflow: 'auto' }}
                     ></div>
                     <Divider dashed />
-                    <ProDescriptions>
+                    <ProDescriptions column={1}>
                       <ProDescriptions.Item label="收货仓库" valueEnum={depotEnum}>
                         {current?.depot}
+                      </ProDescriptions.Item>
+                      <ProDescriptions.Item label="库存状态" valueEnum={tagEnumMap}>
+                        {current?.availability}
                       </ProDescriptions.Item>
                     </ProDescriptions>
                     {current?.goodsTags?.map((x) => (
@@ -164,8 +169,8 @@ const DetailPage: FC = () => {
               bordered={false}
               tabList={[
                 { key: 'skuList', tab: 'sku列表 ' },
-                { key: 'records', tab: '记录' },
                 { key: 'channels', tab: '运输线路' },
+                { key: 'records', tab: '记录' },
               ]}
               activeTabKey={tabKey}
               onTabChange={(_tabKey: string) => {

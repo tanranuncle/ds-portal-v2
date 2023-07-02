@@ -1,13 +1,21 @@
-import { addGoods, depotEnum, fallbackImageData, getGoodsList } from '@/services/apis/goods';
+import {
+  addGoods,
+  depotEnum,
+  fallbackImageData,
+  getGoodsList,
+  tagEnumMap,
+} from '@/services/apis/goods';
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProDescriptions, ProList } from '@ant-design/pro-components';
-import { Button, Image, message, Tooltip } from 'antd';
+import { Button, Image, message, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
 
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import UpdateForm from './component/eum';
+
+const { Paragraph } = Typography;
 
 const GoodsList: FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -59,11 +67,13 @@ const GoodsList: FC = () => {
             dataIndex: 'remark',
             render: (_, row) => {
               return (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `${row.remark.replaceAll('\n', '</br>')}`,
-                  }}
-                ></div>
+                <Paragraph ellipsis={{ rows: 2 }}>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: `${row.remark.replaceAll('\n', '</br>')}`,
+                    }}
+                  ></div>
+                </Paragraph>
               );
             },
           },
@@ -88,6 +98,9 @@ const GoodsList: FC = () => {
                 <ProDescriptions>
                   <ProDescriptions.Item label="收货仓库" valueEnum={depotEnum}>
                     {row?.depot}
+                  </ProDescriptions.Item>
+                  <ProDescriptions.Item label="库存状态" valueEnum={tagEnumMap}>
+                    {row?.availability}
                   </ProDescriptions.Item>
                 </ProDescriptions>
               );

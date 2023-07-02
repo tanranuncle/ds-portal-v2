@@ -7,7 +7,7 @@ export const depotEnum = {
 };
 
 export const tagEnumMap = {
-  '0': { text: '', color: '', desc: '' },
+  '0': { text: '-', desc: '-' },
   '1': { text: 'RTS', color: 'green', desc: 'Ready To Ship(RTS)' },
   '2': { text: 'Similar', color: 'blue', desc: 'Similar' },
   '3': { text: 'WFP', color: 'red', desc: 'Wait For Production(WFP)' },
