@@ -1,56 +1,25 @@
 import {
-  addComment,
-  addSku,
-  deleteComment,
   deleteGoods,
-  deleteSku,
   depotEnum,
   editGoods,
-  exportSkuList,
   fallbackImageData,
-  getComment,
   getDetail,
-  updateSku,
 } from '@/services/apis/goods';
-import { DeleteOutlined, EditOutlined, EuroCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import {
-  ActionType,
-  GridContent,
-  ModalForm,
-  PageContainer,
-  ProColumns,
-  ProDescriptions,
-  ProForm,
-  ProFormDigit,
-  ProFormText,
-  ProFormTextArea,
-  ProList,
-  ProTable,
-} from '@ant-design/pro-components';
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Form,
-  Image,
-  message,
-  Popconfirm,
-  Row,
-  Tag,
-  Tooltip,
-} from 'antd';
-import moment from 'moment';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { DeleteOutlined, EditOutlined, EuroCircleOutlined } from '@ant-design/icons';
+import { GridContent, PageContainer, ProDescriptions } from '@ant-design/pro-components';
+import { Card, Col, Divider, Image, message, Popconfirm, Row, Tag, Tooltip } from 'antd';
+import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'umi';
 
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+import GoodsChannelTable from '@/pages/GoodsList/component/goodsChannel';
+import CommentTable from './component/commentTable';
 import UpdateForm from './component/eum';
+import SkuTable from './component/skuTable';
 
-export type tabKeyType = 'skuList' | 'records';
+export type tabKeyType = 'skuList' | 'records' | 'channels';
 
 const GoodsImgPreview: React.FC<{ imageList: string[] | undefined; width?: string | number }> = ({
   imageList,
@@ -83,12 +52,7 @@ const GoodsImgPreview: React.FC<{ imageList: string[] | undefined; width?: strin
 
 const DetailPage: FC = () => {
   const [current, setCurrent] = useState<Partial<API.Goods> | undefined>(undefined);
-  const [skuModalVisit, setSkuModalVisit] = useState(false);
   const [tabKey, setTabKey] = useState<tabKeyType>('skuList');
-  const actionRef = useRef<ActionType>();
-  const [form] = Form.useForm();
-
-  const [bindEditProductForm] = Form.useForm();
 
   const params = useParams();
 
@@ -101,369 +65,16 @@ const DetailPage: FC = () => {
     loadData();
   }, []);
 
-  bindEditProductForm.setFieldsValue({ ...current });
-
-  const handleDeleteSku = async (skuId) => {
-    await deleteSku(skuId);
-    loadData();
-    message.success('删除成功');
-    return true;
-  };
-  const handleDeleteGoodsComment = async (commentId) => {
-    await deleteComment(commentId);
-    actionRef.current?.reload();
-    message.success('删除成功');
-    return true;
-  };
-
-  const handleModifySku = (sku) => {
-    form.setFieldsValue(sku);
-    setSkuModalVisit(true);
-  };
-
-  const handleSkuSubmit = async (values: API.Sku) => {
-    console.log(values);
-    if (values.skuId) {
-      await updateSku(values);
-    } else {
-      await addSku(values);
-    }
-    loadData();
-    message.success('提交成功');
-    setSkuModalVisit(false);
-    return true;
-  };
-
-  const skuColumns: ProColumns<API.Sku>[] = [
-    {
-      title: 'skuId',
-      dataIndex: 'skuId',
-      width: 48,
-    },
-    {
-      title: 'sku名称',
-      dataIndex: 'skuName',
-    },
-    {
-      title: '图片',
-      dataIndex: 'skuImage',
-      render: (text, row) => {
-        if (row.skuImage.startsWith('http')) {
-          return <Image width={48} src={row.skuImage} />;
-        } else {
-          return <div></div>;
-        }
-      },
-    },
-    {
-      title: '供方skuId',
-      dataIndex: 'suppSkuId',
-    },
-    {
-      title: '供应商信息',
-      dataIndex: 'suppName',
-      render: (text, row) => {
-        if (row.link.startsWith('http')) {
-          return (
-            <a href={row.link} target="_blank" title={row.link}>
-              {text}
-            </a>
-          );
-        } else {
-          return (
-            <a title={row.link} onClick={() => message.error('无效链接，请以http开头')}>
-              {text}
-            </a>
-          );
-        }
-      },
-    },
-    {
-      title: '计费体积(长*宽*高)',
-      render: (_, row) => {
-        return (
-          <>
-            {row.length * row.width * row.height}cm³({row.length}*{row.width}*{row.height})
-          </>
-        );
-      },
-      search: false,
-    },
-    {
-      title: '计费重量(kg)',
-      dataIndex: 'weight',
-      render: (text) => {
-        return text + ' kg';
-      },
-    },
-    {
-      title: '采购价(元)',
-      dataIndex: 'purPrice',
-      search: false,
-      render: (text) => {
-        return text + ' RMB';
-      },
-    },
-    {
-      title: '操作',
-      valueType: 'option',
-      key: 'option',
-      render: (text, record) => [
-        <Button
-          key={'skuEditBtn' + record.skuId}
-          size="small"
-          type="link"
-          onClick={() => handleModifySku(record)}
-        >
-          编辑
-        </Button>,
-        <Popconfirm
-          key={'skuDelPop' + record.skuId}
-          title="删除后不能恢复"
-          onConfirm={() => handleDeleteSku(record.skuId)}
-        >
-          <Button key={'skuDelBtn' + record.skuId} size="small" danger type="link">
-            删除
-          </Button>
-        </Popconfirm>,
-      ],
-    },
-  ];
-
-  /*富文本编辑*/
-  const [recordContent, setRecordContent] = useState('');
-  const quillModules = {
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-      ['link', 'image', 'video'],
-      ['clean'],
-    ],
-  };
-
   // 渲染tab切换
   const renderChildrenByTabKey = (tabValue: tabKeyType) => {
     if (tabValue === 'skuList') {
-      return (
-        <ProTable
-          columns={skuColumns}
-          search={false}
-          dataSource={current?.skuList}
-          toolBarRender={() => [
-            <ModalForm<API.Sku>
-              initialValues={{ goodsId: current?.goodsId }}
-              key="addSKu"
-              title="添加sku"
-              open={skuModalVisit}
-              trigger={
-                <Button type="primary">
-                  <PlusOutlined />
-                  添加sku
-                </Button>
-              }
-              form={form}
-              autoFocusFirstInput
-              modalProps={{
-                destroyOnClose: true,
-                onCancel: () => setSkuModalVisit(false),
-              }}
-              submitTimeout={2000}
-              onFinish={handleSkuSubmit}
-              layout="horizontal"
-            >
-              <ProFormText name="goodsId" hidden disabled />
-              <ProFormText name="skuId" hidden disabled />
-              <ProForm.Group>
-                <ProFormText
-                  name="skuName"
-                  label="sku名称"
-                  required
-                  placeholder="填写sku名称"
-                  rules={[{ required: true, message: 'sku名称为必填项' }]}
-                />
-                <ProFormText
-                  name="skuNameEn"
-                  label="sku名称(EN)"
-                  placeholder="填写sku名称(EN)"
-                  rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
-                />
-              </ProForm.Group>
-              <ProForm.Group>
-                <ProFormDigit
-                  label="采购价"
-                  name="purPrice"
-                  required
-                  width="xs"
-                  min={1.0}
-                  fieldProps={{ precision: 2 }}
-                  rules={[{ required: true, message: '采购价为必填项' }]}
-                />
-                <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
-              </ProForm.Group>
-              <ProFormText
-                name="suppName"
-                label="供应商信息"
-                required
-                placeholder="填写供应商信息"
-                rules={[{ required: true, message: '供应商信息为必填项' }]}
-              />
-              <ProFormText
-                name="link"
-                label="sku链接"
-                required
-                placeholder="填写sku链接"
-                rules={[{ required: true, message: 'sku链接为必填项' }]}
-              />
-              <ProFormText
-                name="skuImage"
-                label="图片"
-                required={false}
-                placeholder="填写sku图片"
-                rules={[{ required: false, message: 'sku图片为必填项' }]}
-              />
-              <ProForm.Group>
-                <ProFormDigit
-                  label="长"
-                  name="length"
-                  width="xs"
-                  min={1}
-                  placeholder="cm"
-                  rules={[{ required: true, message: '必填项' }]}
-                />
-                <ProFormDigit
-                  label="宽"
-                  name="width"
-                  width="xs"
-                  min={1}
-                  placeholder="cm"
-                  rules={[{ required: true, message: '必填项' }]}
-                />
-                <ProFormDigit
-                  label="高"
-                  name="height"
-                  width="xs"
-                  min={1}
-                  placeholder="cm"
-                  rules={[{ required: true, message: '必填项' }]}
-                />
-                <ProFormDigit
-                  label="重量"
-                  name="weight"
-                  width="xs"
-                  min={0.01}
-                  placeholder="kg"
-                  rules={[{ required: true, message: '必填项' }]}
-                />
-              </ProForm.Group>
-              <ProFormTextArea name="remark" label="备注" />
-            </ModalForm>,
-            <Button
-              key="exportBtn"
-              type="primary"
-              onClick={() => {
-                exportSkuList(current?.goodsId);
-              }}
-            >
-              导出
-            </Button>,
-          ]}
-        />
-      );
+      return <SkuTable loadData={loadData} current={current} />;
     }
     if (tabValue === 'records') {
-      return (
-        <>
-          <ProList<{ title: string }>
-            request={() => getComment(current?.goodsId)}
-            actionRef={actionRef}
-            metas={{
-              title: { dataIndex: 'user' },
-              description: {
-                dataIndex: 'content',
-                render: (_, row) => {
-                  return (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: `${row.content.replaceAll('\n', '</br>')}`,
-                      }}
-                    ></div>
-                  );
-                },
-              },
-              avatar: { dataIndex: 'avatar' },
-              subTitle: {
-                render: (_, row) => {
-                  return [
-                    <span key="fakeTime">
-                      {moment(row.createdAt * 1000).format('YYYY-MM-DD HH:mm:ss')}
-                    </span>,
-                  ];
-                },
-              },
-              actions: {
-                render: (_, row) => {
-                  if (!row.owner) {
-                    return '';
-                  }
-                  return [
-                    <Popconfirm
-                      key={'goodsCommentId' + row.recId}
-                      title="确认删除商品记录吗？"
-                      onConfirm={() => handleDeleteGoodsComment(row.recId)}
-                    >
-                      <Button
-                        key={'goodsCommentDelBtn' + row.recId}
-                        size="small"
-                        danger
-                        type="link"
-                      >
-                        删除
-                      </Button>
-                    </Popconfirm>,
-                  ];
-                },
-              },
-            }}
-            toolBarRender={() => {
-              return [
-                <ModalForm
-                  initialValues={{ goodsId: current?.goodsId }}
-                  key="addComment"
-                  onFinish={async (values) => {
-                    await addComment({ ...values, content: recordContent });
-                    actionRef.current?.reloadAndRest?.();
-                    setRecordContent('');
-                    message.success('提交成功');
-                    return true;
-                  }}
-                  trigger={
-                    <Button type="primary">
-                      {' '}
-                      <PlusOutlined /> 记录{' '}
-                    </Button>
-                  }
-                >
-                  <ProFormText name="goodsId" hidden disabled />
-                  <ProForm.Item
-                    label="记录"
-                    name="content"
-                    rules={[{ required: true, message: '请输入记录' }]}
-                    style={{ height: 400 }}
-                  >
-                    <ReactQuill
-                      style={{ height: 330 }}
-                      modules={quillModules}
-                      value={recordContent}
-                      onChange={setRecordContent}
-                    />
-                  </ProForm.Item>
-                </ModalForm>,
-              ];
-            }}
-          />
-        </>
-      );
+      return <CommentTable goodsId={current.goodsId} />;
+    }
+    if (tabValue === 'channels') {
+      return <GoodsChannelTable goodsId={current.goodsId} />;
     }
     return null;
   };
@@ -554,6 +165,7 @@ const DetailPage: FC = () => {
               tabList={[
                 { key: 'skuList', tab: 'sku列表 ' },
                 { key: 'records', tab: '记录' },
+                { key: 'channels', tab: '运输线路' },
               ]}
               activeTabKey={tabKey}
               onTabChange={(_tabKey: string) => {

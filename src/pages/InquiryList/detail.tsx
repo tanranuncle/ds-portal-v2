@@ -8,6 +8,7 @@ import {
 import { Link, useParams } from 'umi';
 
 import EllipsisLink from '@/components/EllipsisLink';
+import { tagEnumMap } from '@/services/apis/goods';
 import { InfoCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   ModalForm,
@@ -27,13 +28,6 @@ const DetailPage: FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [bindForm] = Form.useForm();
-
-  const tagEnumMap = {
-    '0': { text: '', color: '' },
-    '1': { text: 'RTS', color: 'green' },
-    '2': { text: 'Similar', color: 'blue' },
-    '3': { text: 'WFP', color: 'red' },
-  };
 
   const params = useParams();
 

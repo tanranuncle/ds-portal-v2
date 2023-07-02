@@ -1,4 +1,5 @@
 import { depotEnum } from '@/services/apis/goods';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import {
   ModalForm,
   ProForm,
@@ -6,7 +7,7 @@ import {
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Tabs } from 'antd';
+import { Form, Radio, Tabs } from 'antd';
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -55,40 +56,59 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           rules={[{ required: true, message: '商品名称为必填项' }]}
           width="md"
           name="goodsName"
+          placeholder="请输入商品的中文名称"
           label="商品名称"
         />
         <ProFormText
           rules={[{ required: false, message: '商品英文名称为非必填项' }]}
           width="md"
           name="goodsNameEn"
+          placeholder="请输入商品的英文名称"
           label="商品名称(EN)"
         />
       </ProForm.Group>
-      <ProFormRadio.Group
-        name="goodsType"
-        label="商品类型"
-        initialValue={1}
-        options={[
-          { label: '普通', value: 1 },
-          { label: '带电', value: 2 },
-          { label: '特货', value: 3 },
-        ]}
-      />
       <ProForm.Group>
         <ProFormSelect
           name="depot"
           label="收获仓库"
           width="md"
           valueEnum={depotEnum}
-          placeholder="请选择收获仓库"
           rules={[{ required: true, message: '请选择收获仓库' }]}
         />
-        {/*<ProFormText*/}
-        {/*  width="md"*/}
-        {/*  name="carrier"*/}
-        {/*  label="物流线路"*/}
-        {/*  placeholder="请填写运输代码，如：THPHR"*/}
-        {/*/>*/}
+        <ProFormRadio.Group
+          name="goodsType"
+          label="商品类型"
+          required
+          width="md"
+          options={[
+            { label: '普通', value: 1 },
+            { label: '带电', value: 2 },
+            { label: '特货', value: 3 },
+          ]}
+        />
+      </ProForm.Group>
+      <ProForm.Group>
+        <ProFormText
+          width="md"
+          name="processingTime"
+          label="处理时间"
+          placeholder="e.g. 4-5 days"
+        />
+        <Form.Item
+          label="标记"
+          name="availability"
+          required
+          rules={[{ required: true, message: '请选择一种关联标记!' }]}
+          tooltip={{ title: '选择一种关联标记', icon: <InfoCircleOutlined /> }}
+        >
+          <Radio.Group>
+            <Radio.Button value={1} defaultChecked={true}>
+              RTS
+            </Radio.Button>
+            <Radio.Button value={2}>Similar</Radio.Button>
+            <Radio.Button value={3}>WFP</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
       </ProForm.Group>
       <ProFormText
         rules={[{ required: true, message: '请填入商品图片链接' }]}

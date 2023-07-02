@@ -1,12 +1,26 @@
 import { Footer } from '@/components';
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
-import { quote } from '@/services/apis/goods';
+import { quote, tagEnumMap } from '@/services/apis/goods';
 import { CountryOptions } from '@/services/apis/logistic';
 import { Helmet } from '@@/exports';
 import ProCard from '@ant-design/pro-card';
-import { PageContainer, ProDescriptions } from '@ant-design/pro-components';
+import { GridContent, PageContainer, ProDescriptions } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Divider, Form, Input, InputNumber, Radio, Select, Space, Tooltip, Typography } from 'antd';
+import {
+  Carousel,
+  Col,
+  Divider,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Radio,
+  Row,
+  Select,
+  Space,
+  Tooltip,
+  Typography,
+} from 'antd';
 import React from 'react';
 import { history, useLocation, useParams } from 'umi';
 
@@ -50,9 +64,7 @@ const Quote = () => {
         '&quantity=' +
         form.getFieldValue('quantity') +
         '&skuId=' +
-        form.getFieldValue('skuId') +
-        '&carrierCode=' +
-        form.getFieldValue('carrierCode'),
+        form.getFieldValue('skuId'),
     });
   };
 
@@ -68,110 +80,131 @@ const Quote = () => {
     };
   });
   return (
-    <PageContainer className={containerClassName}>
+    <PageContainer
+      title={
+        <Space>
+          <img style={{ width: '120px', height: '30px' }} alt="logo" src="/logo.png" />
+          Zesty Background
+        </Space>
+      }
+      className={containerClassName}
+    >
       <Helmet>
         <title>
           {'报价单'}- {goodsSn}
         </title>
       </Helmet>
-      <ProCard
-        title={
-          <Space>
-            <img style={{ width: '120px', height: '30px' }} alt="logo" src="/logo.png" />
-            Zesty Background
-          </Space>
-        }
-        split={'vertical'}
-        bordered
-        headerBordered
-      >
-        <ProCard colSpan="30%">
-          <GoodsRibbon goodsType={current?.goodsVo.goodsType}>
-            <img
-              alt="example"
-              style={{ borderRadius: '10%', width: '360px', height: '360px' }}
-              src={current?.goodsVo?.goodsImage}
-            />
-          </GoodsRibbon>
-        </ProCard>
-        <ProCard title={<Title level={4}>{current?.goodsVo?.goodsNameEn}</Title>}>
-          <Tooltip
-            placement="topLeft"
-            title={
-              'product:$' +
-              current?.result.baseFee +
-              '\nshipping:$' +
-              current?.result.operationFee +
-              '\nvolWeight:' +
-              current?.result.volWeight +
-              'g' +
-              '\nActWeight:' +
-              current?.result.actWeight +
-              'g'
-            }
-          >
-            <Title level={2}>$ {current?.result.totalFee}</Title>
-          </Tooltip>
-          <ProDescriptions
-            editable={{
-              onSave: async (keypath, newInfo, oriInfo) => {
-                form.setFieldValue('carrierCode', newInfo[keypath]);
-                onFormChanged();
-                return true;
-              },
-            }}
-          >
-            <ProDescriptions.Item label="Product Availability">
-              Ready To Ship（RTS）
-            </ProDescriptions.Item>
-            <ProDescriptions.Item label="Shipping days">
-              {current?.result.time}
-            </ProDescriptions.Item>
-            <ProDescriptions.Item label="Shipping Company">
-              {current?.result.carrierCompany}
-            </ProDescriptions.Item>
-            <ProDescriptions.Item label="Shipping line" valueType="text">
-              {current?.result.carrierCode}
-            </ProDescriptions.Item>
-          </ProDescriptions>
-          <Link href="http://www.zesty.com">Reference link</Link>
-          <Divider dashed />
-          <Form form={form}>
-            <Form.Item name="carrierCode" hidden={true}>
-              <Input />
-            </Form.Item>
-            <Form.Item label="Country" name="country">
-              <Select
-                placeholder="Select a country"
-                style={{ width: 150 }}
-                options={CountryOptions}
-                onChange={onFormChanged}
-              />
-            </Form.Item>
-            <Form.Item label="Sku" name="skuId">
-              <Radio.Group onChange={onFormChanged}>
-                {current?.goodsVo?.skuList.map((item: any) => {
-                  return (
-                    <Radio.Button key={item.skuId} value={item.skuId}>
-                      {item.skuNameEn}
-                    </Radio.Button>
-                  );
-                })}
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item label="QTY" name="quantity">
-              <InputNumber
-                min={1}
-                max={3}
-                style={{ width: '100px' }}
-                addonAfter="pcs"
-                title={'qty'}
-                onChange={onFormChanged}
-              ></InputNumber>
-            </Form.Item>
-          </Form>
-        </ProCard>
-      </ProCard>
+      <GridContent>
+        <Row gutter={24}>
+          <Col lg={7} md={24}>
+            <ProCard bordered={true}>
+              <GoodsRibbon goodsType={current?.goodsVo.goodsType}>
+                <Carousel autoplay>
+                  {current?.goodsVo.imageUrls.map((imgUrl) => (
+                    <div>
+                      <Image style={{ width: '100%' }} key={imgUrl} src={imgUrl} />
+                    </div>
+                  ))}
+                </Carousel>
+              </GoodsRibbon>
+            </ProCard>
+          </Col>
+          <Col lg={17} md={24}>
+            <ProCard title={<Title level={4}>{current?.goodsVo?.goodsNameEn}</Title>}>
+              <Tooltip
+                placement="topLeft"
+                title={
+                  'product:$' +
+                  current?.result.baseFee +
+                  '\nshipping:$' +
+                  current?.result.operationFee +
+                  '\nvolWeight:' +
+                  current?.result.volWeight +
+                  'g' +
+                  '\nActWeight:' +
+                  current?.result.actWeight +
+                  'g'
+                }
+              >
+                <Title level={2}>$ {current?.result.totalFee}</Title>
+              </Tooltip>
+              <ProDescriptions
+                editable={{
+                  onSave: async (keypath, newInfo, oriInfo) => {
+                    form.setFieldValue('carrierCode', newInfo[keypath]);
+                    onFormChanged();
+                    return true;
+                  },
+                }}
+              >
+                <ProDescriptions.Item label="Product Availability">
+                  {tagEnumMap[current?.availability]?.desc}
+                </ProDescriptions.Item>
+                <ProDescriptions.Item label="Processing days">
+                  {current?.processingTime}
+                </ProDescriptions.Item>
+                <ProDescriptions.Item label="Shipping days">
+                  {current?.result.time}
+                </ProDescriptions.Item>
+                <ProDescriptions.Item label="Shipping Company">
+                  {current?.result.carrierCompany}
+                </ProDescriptions.Item>
+                <ProDescriptions.Item label="Shipping line">
+                  {current?.result.carrierCode}
+                </ProDescriptions.Item>
+              </ProDescriptions>
+              <Link href={current?.referenceUrl}>Reference link</Link>
+              <Divider dashed />
+              <Form form={form}>
+                <Form.Item name="carrierCode" hidden={true}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Country" name="country">
+                  <Select
+                    placeholder="Select a country"
+                    style={{ width: 150 }}
+                    options={CountryOptions}
+                    onChange={onFormChanged}
+                  />
+                </Form.Item>
+                <Form.Item label="Sku" name="skuId">
+                  <Radio.Group onChange={onFormChanged}>
+                    {current?.goodsVo?.skuList.map((item: any) => {
+                      return (
+                        <Radio.Button key={item.skuId} value={item.skuId}>
+                          {item.skuNameEn}
+                        </Radio.Button>
+                      );
+                    })}
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="QTY" name="quantity">
+                  <InputNumber
+                    min={1}
+                    max={3}
+                    style={{ width: '100px' }}
+                    addonAfter="pcs"
+                    title={'qty'}
+                    onChange={onFormChanged}
+                  ></InputNumber>
+                </Form.Item>
+              </Form>
+            </ProCard>
+          </Col>
+        </Row>
+        <Divider orientation="left">Description</Divider>
+        <Row gutter={24}>
+          <Col lg={24} md={24}>
+            <ProCard bordered={true}>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: `${current?.goodsVo?.remarkEn?.replaceAll('\n', '</br>')}`,
+                }}
+              ></div>
+            </ProCard>
+          </Col>
+        </Row>
+      </GridContent>
       <Footer />
     </PageContainer>
   );

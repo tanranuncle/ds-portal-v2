@@ -6,6 +6,13 @@ export const depotEnum = {
   gz: { text: '广州仓库' },
 };
 
+export const tagEnumMap = {
+  '0': { text: '', color: '', desc: '' },
+  '1': { text: 'RTS', color: 'green', desc: 'Ready To Ship(RTS)' },
+  '2': { text: 'Similar', color: 'blue', desc: 'Similar' },
+  '3': { text: 'WFP', color: 'red', desc: 'Wait For Production(WFP)' },
+};
+
 /** 获取商品列表 */
 export async function getGoodsList(
   params: {
@@ -75,7 +82,6 @@ export async function getDetail(id: number) {
   let goodsDetail;
   if (response.code === 200) {
     goodsDetail = response.data;
-    goodsDetail.imageUrls = [goodsDetail.goodsImage];
   } else {
     message.error(response.message);
   }
@@ -122,7 +128,7 @@ export async function addComment(comment) {
 }
 
 /** 删除商品记录 */
-export async function deleteComment(commentId) {
+export async function deleteComment(commentId: number) {
   return request<any>('/api/goods/deleteComment', {
     method: 'POST',
     data: { recId: commentId },
@@ -156,5 +162,37 @@ export async function exportSkuList(goodsId) {
   link.href = window.URL.createObjectURL(response);
   link.click();
   window.URL.revokeObjectURL(link.href);
+  return response;
+}
+
+export async function getGoodsChannels(goodsId: number) {
+  const response = await request<API.GoodsChannelType[]>('/api/goods/' + goodsId + '/channels', {
+    method: 'GET',
+  });
+  return response;
+}
+
+export async function editOrUpdateGoodsChannel({
+  goodsId,
+  countryCode,
+  channelCode,
+}: API.GoodsChannelType) {
+  const response = await request<API.GoodsChannelType>(
+    '/api/goods/' + goodsId + '/channels/' + countryCode,
+    {
+      method: 'PUT',
+      data: { channelCode: channelCode },
+    },
+  );
+  return response;
+}
+
+export async function deleteGoodsChannel({ goodsId, countryCode }: API.GoodsChannelType) {
+  const response = await request<API.GoodsChannelType>(
+    '/api/goods/' + goodsId + '/channels/' + countryCode,
+    {
+      method: 'DELETE',
+    },
+  );
   return response;
 }

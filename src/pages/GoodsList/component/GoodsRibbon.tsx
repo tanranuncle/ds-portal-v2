@@ -3,7 +3,7 @@ import { Badge, Tooltip } from 'antd';
 
 const GoodsRibbon = (props) => {
   const { goodsType } = props;
-  console.log(props);
+  //onsole.log(props);
   if (goodsType === 3) {
     return (
       <Badge.Ribbon
@@ -31,7 +31,7 @@ const GoodsRibbon = (props) => {
       </Badge.Ribbon>
     );
   } else {
-    console.log('no ribbon');
+    //console.log('no ribbon');
     return props.children;
   }
 };

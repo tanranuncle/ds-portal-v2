@@ -169,4 +169,12 @@ declare namespace API {
     shippingFee?: string;
     extraFee?: string;
   };
+
+  type GoodsChannelType = {
+    recId: number;
+    goodsId: number;
+    countryCode: string;
+    channelCode: string;
+    updatedAt: number;
+  };
 }

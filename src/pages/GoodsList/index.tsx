@@ -107,6 +107,7 @@ const GoodsList: FC = () => {
           },
           actions: [
             <UpdateForm
+              values={{ goodsType: 1 }}
               onFinish={async (value) => {
                 const success = await addGoods(value as API.Goods);
                 if (success) {
