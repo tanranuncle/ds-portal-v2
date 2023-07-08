@@ -3,22 +3,51 @@ import {
   editOrUpdateGoodsChannel,
   getGoodsChannels,
 } from '@/services/apis/goods';
-import { CountryOptions } from '@/services/apis/logistic';
+import { CountryOptions, getCompanyChannels, shippingCompanyEnum } from '@/services/apis/logistic';
 import { ActionType, ModalForm, ProForm, ProFormText, ProTable } from '@ant-design/pro-components';
-import { Button, Form, message, Select } from 'antd';
-import React, { useRef } from 'react';
+import { Button, Cascader, Form, message, Select } from 'antd';
+import React, { useRef, useState } from 'react';
+
+interface Option {
+  value?: string | number | null;
+  label: React.ReactNode;
+  children?: Option[];
+  isLeaf?: boolean;
+}
+
+const optionLists: Option[] = Object.keys(shippingCompanyEnum).map((key) => {
+  return {
+    value: key,
+    label: shippingCompanyEnum[key].text,
+    isLeaf: false,
+  };
+});
 
 export type GoodsChannelTableParams = {
   goodsId: number;
 };
 const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
   const actionRef = useRef<ActionType>();
+  const [options, setOptions] = useState<Option[]>(optionLists);
 
   const handleUpdateOrEdit = async (goodsChannel: API.GoodsChannelType) => {
     await editOrUpdateGoodsChannel(goodsChannel);
     actionRef.current?.reload();
     message.success('设置成功');
     return true;
+  };
+
+  const loadData = (selectedOptions: Option[]) => {
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    console.log(targetOption);
+    getCompanyChannels(targetOption.value as string).then((x) => {
+      console.log(x.data);
+      targetOption.children = x.data.map((item) => {
+        console.log(item.name);
+        return { label: item.name + '(' + item.code + ')', value: item.code };
+      });
+      setOptions([...options]);
+    });
   };
 
   const columns = [
@@ -67,7 +96,8 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
             initialValues={{ goodsId: goodsId }}
             key="editOrUpdateGoodsChannel"
             onFinish={async (values: API.GoodsChannelType) => {
-              await handleUpdateOrEdit(values);
+              const params = { ...values, channelCode: values.selectedChannel[1] };
+              await handleUpdateOrEdit(params);
               actionRef.current?.reloadAndRest?.();
               return true;
             }}
@@ -87,12 +117,9 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
                   options={CountryOptions}
                 />
               </Form.Item>
-              <ProFormText
-                name="channelCode"
-                width="md"
-                label="渠道代码"
-                rules={[{ required: true, message: '请填写渠道代码' }]}
-              />
+              <Form.Item name="selectedChannel" label="渠道代码">
+                <Cascader options={options} loadData={loadData} placeholder="Please select" />
+              </Form.Item>
             </ProForm.Group>
           </ModalForm>,
         ];

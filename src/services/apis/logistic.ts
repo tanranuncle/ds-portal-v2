@@ -186,3 +186,10 @@ export async function exportChannelDetail(channelId) {
   window.URL.revokeObjectURL(link.href);
   return response;
 }
+
+export async function getCompanyChannels(companyCode: string) {
+  const response = await request('/api/logistic/companies/' + companyCode + '/channels', {
+    method: 'GET',
+  });
+  return response;
+}
