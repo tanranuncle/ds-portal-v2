@@ -1,11 +1,7 @@
-import {
-  deleteGoodsChannel,
-  editOrUpdateGoodsChannel,
-  getGoodsChannels,
-} from '@/services/apis/goods';
+import { deleteGoodsChannel, editGoodsChannel, getGoodsChannels } from '@/services/apis/goods';
 import { CountryOptions, getCompanyChannels, shippingCompanyEnum } from '@/services/apis/logistic';
 import { ActionType, ModalForm, ProForm, ProFormText, ProTable } from '@ant-design/pro-components';
-import { Button, Cascader, Form, message, Select } from 'antd';
+import { Button, Cascader, Form, message, Popconfirm, Select } from 'antd';
 import React, { useRef, useState } from 'react';
 
 interface Option {
@@ -30,8 +26,8 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
   const actionRef = useRef<ActionType>();
   const [options, setOptions] = useState<Option[]>(optionLists);
 
-  const handleUpdateOrEdit = async (goodsChannel: API.GoodsChannelType) => {
-    await editOrUpdateGoodsChannel(goodsChannel);
+  const handleUpdate = async (channelConfigs: API.GoodsChannelType[]) => {
+    await editGoodsChannel(channelConfigs);
     actionRef.current?.reload();
     message.success('设置成功');
     return true;
@@ -58,14 +54,18 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
     {
       title: '渠道代码',
       dataIndex: 'channelCode',
+      render: (_, record) => {
+        return record.channelName + '(' + record.channelCode + ')';
+      },
     },
     {
       title: '操作',
       key: 'option',
       render: (_, record: API.GoodsChannelType) => [
-        <a
-          key="delete"
-          onClick={async (e) => {
+        <Popconfirm
+          title="删除运输路线配置"
+          description="确认要删除这个配置吗?"
+          onConfirm={async (e) => {
             e.preventDefault();
             const resp = await deleteGoodsChannel(record);
             if (resp.code === 200) {
@@ -76,8 +76,8 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
             }
           }}
         >
-          移除
-        </a>,
+          <a key="delete">移除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -94,10 +94,22 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
           <ModalForm
             title="配置渠道"
             initialValues={{ goodsId: goodsId }}
-            key="editOrUpdateGoodsChannel"
-            onFinish={async (values: API.GoodsChannelType) => {
-              const params = { ...values, channelCode: values.selectedChannel[1] };
-              await handleUpdateOrEdit(params);
+            key="editGoodsChannel"
+            onFinish={async (values: {
+              countryCodes: string[];
+              goodsId: number;
+              selectedChannel: string[];
+            }) => {
+              const channelConfigs: API.GoodsChannelType[] = values.countryCodes.map(
+                (countryCode) => {
+                  return {
+                    countryCode: countryCode,
+                    channelCode: values.selectedChannel[1],
+                    goodsId: values.goodsId,
+                  };
+                },
+              );
+              await handleUpdate(channelConfigs);
               actionRef.current?.reloadAndRest?.();
               return true;
             }}
@@ -108,17 +120,23 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
               <ProFormText name="goodsId" hidden disabled />
               <Form.Item
                 label="国家"
-                name="countryCode"
+                name="countryCodes"
                 rules={[{ required: true, message: '请选择国家' }]}
               >
                 <Select
+                  mode="multiple"
                   placeholder="Select a country"
-                  style={{ width: 150 }}
+                  style={{ width: 400 }}
                   options={CountryOptions}
                 />
               </Form.Item>
               <Form.Item name="selectedChannel" label="渠道代码">
-                <Cascader options={options} loadData={loadData} placeholder="Please select" />
+                <Cascader
+                  options={options}
+                  loadData={loadData}
+                  placeholder="Please select"
+                  style={{ width: 400 }}
+                />
               </Form.Item>
             </ProForm.Group>
           </ModalForm>,

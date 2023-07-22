@@ -171,10 +171,10 @@ declare namespace API {
   };
 
   type GoodsChannelType = {
-    recId: number;
+    recId?: number;
     goodsId: number;
     countryCode: string;
     channelCode: string;
-    updatedAt: number;
+    updatedAt?: number;
   };
 }

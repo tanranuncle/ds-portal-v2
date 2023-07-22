@@ -38,7 +38,11 @@ const GoodsList: FC = () => {
           title: {
             dataIndex: 'goodsSn',
             render: (goodsSn, row) => {
-              return <Link to={'/goods/' + row.goodsSn}>{goodsSn}</Link>;
+              return (
+                <Link to={'/goods/' + row.goodsSn} target="_blank">
+                  {goodsSn}
+                </Link>
+              );
             },
           },
           subTitle: {

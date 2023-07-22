@@ -185,18 +185,11 @@ export async function getGoodsChannels(goodsId: number) {
   return response;
 }
 
-export async function editOrUpdateGoodsChannel({
-  goodsId,
-  countryCode,
-  channelCode,
-}: API.GoodsChannelType) {
-  const response = await request<API.GoodsChannelType>(
-    '/api/goods/' + goodsId + '/channels/' + countryCode,
-    {
-      method: 'PUT',
-      data: { channelCode: channelCode },
-    },
-  );
+export async function editGoodsChannel(channelConfigs: API.GoodsChannelType[]) {
+  const response = await request<API.GoodsChannelType>('/api/goods/channels/config', {
+    method: 'POST',
+    data: channelConfigs,
+  });
   return response;
 }
 
