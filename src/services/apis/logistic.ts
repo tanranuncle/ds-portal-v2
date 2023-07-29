@@ -2,30 +2,28 @@ import { request } from '@umijs/max';
 import React from 'react';
 
 export const CountryOptions = [
-  {
-    value: 'US',
-    label: 'US',
-  },
-  {
-    value: 'CA',
-    label: 'CA',
-  },
-  {
-    value: 'AU',
-    label: 'AU',
-  },
-  {
-    value: 'GB',
-    label: 'GB',
-  },
-  {
-    value: 'DE',
-    label: 'DE',
-  },
-  {
-    value: 'FR',
-    label: 'FR',
-  },
+  // { value: 'US', label: '美国(US)', },
+  // { value: 'CA', label: '加拿大(CA)', },
+  // { value: 'AU', label: '澳大利亚(AU)', },
+  // { value: 'GB', label: '英国(GB)', },
+  // { value: 'DE', label: '德国(DE)', },
+  // { value: 'FR', label: '法国(FR)', },
+  // { value: 'IT', label: '意大利(IT)', },
+  // { value: 'IE', label: '爱尔兰(IE)', },
+  // { value: 'IL', label: '以色列(IL)', },
+  // { value: 'SE', label: '瑞典(SE)', },
+  // { value: 'CH', label: '瑞士(CH)', },
+  { value: 'US', label: 'US' },
+  { value: 'CA', label: 'CA' },
+  { value: 'AU', label: 'AU' },
+  { value: 'GB', label: 'GB' },
+  { value: 'DE', label: 'DE' },
+  { value: 'FR', label: 'FR' },
+  { value: 'IT', label: 'IT' },
+  { value: 'IE', label: 'IE' },
+  { value: 'IL', label: 'IL' },
+  { value: 'SE', label: 'SE' },
+  { value: 'CH', label: 'CH' },
 ];
 
 export const shippingCompanyEnum = {
