@@ -32,7 +32,7 @@ const GoodsList: FC = () => {
         itemLayout="vertical"
         actionRef={actionRef}
         pagination={{
-          pageSize: 5,
+          defaultPageSize: 5,
         }}
         metas={{
           title: {
