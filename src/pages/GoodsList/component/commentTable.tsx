@@ -44,6 +44,7 @@ const CommentTable: React.FC<CommentTableParams> = ({ goodsId }) => {
                 dangerouslySetInnerHTML={{
                   __html: `${row.content.replaceAll('\n', '</br>')}`,
                 }}
+                style={{ height: '200px', overflow: 'auto' }}
               ></div>
             );
           },
