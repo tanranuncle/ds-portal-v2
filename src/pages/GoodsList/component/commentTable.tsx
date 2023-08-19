@@ -41,9 +41,11 @@ const CommentTable: React.FC<CommentTableParams> = ({ goodsId }) => {
           render: (_, row) => {
             return (
               <div
+                //todo: 通过监听鼠标事件优化体验。当鼠标经过当前内容时，悬浮大窗展示完整内容
                 dangerouslySetInnerHTML={{
                   __html: `${row.content.replaceAll('\n', '</br>')}`,
                 }}
+                style={{ height: '200px', overflow: 'auto' }}
               ></div>
             );
           },
