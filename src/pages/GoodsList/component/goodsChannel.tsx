@@ -63,6 +63,7 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
       key: 'option',
       render: (_, record: API.GoodsChannelType) => [
         <Popconfirm
+          key="delete"
           title="删除运输路线配置"
           description="确认要删除这个配置吗?"
           onConfirm={async (e) => {

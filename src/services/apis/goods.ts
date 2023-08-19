@@ -141,8 +141,34 @@ export function fallbackImageData() {
   return fallbackImage;
 }
 
+export async function saveQuote({ goodsId, name, version }: Record<any, any>) {
+  const response = await request('/api/goods/' + goodsId + '/quote', {
+    method: 'POST',
+    data: { name: name, version: version },
+  });
+  return response;
+}
+
+export function quoteHistory(goodsId: number) {
+  return request<any>('/api/quote/' + goodsId + '/history', {
+    method: 'GET',
+  });
+}
+
 export function quote(goodsSn: string, qStr: string) {
   return request<any>('/api/quote/' + goodsSn + (qStr ? '?' + qStr : ''), {
+    method: 'GET',
+  });
+}
+
+export function quotePreview(goodsSn: string, qStr: string) {
+  return request<any>('/api/quote/' + goodsSn + '/preview' + (qStr ? '?' + qStr : ''), {
+    method: 'GET',
+  });
+}
+
+export function quoteHistoryVersion(goodsSn: string, qStr: string, version: string) {
+  return request<any>('/api/quote/' + goodsSn + '/history/' + version + (qStr ? '?' + qStr : ''), {
     method: 'GET',
   });
 }

@@ -1,6 +1,6 @@
 import { Footer } from '@/components';
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
-import { quote, tagEnumMap } from '@/services/apis/goods';
+import { quote, quoteHistoryVersion, quotePreview, tagEnumMap } from '@/services/apis/goods';
 import { CountryOptions } from '@/services/apis/logistic';
 import { Helmet } from '@@/exports';
 import ProCard from '@ant-design/pro-card';
@@ -35,13 +35,20 @@ const Quote = () => {
   const [form] = Form.useForm();
 
   const goodsSn = useParams<{ sn: string }>().sn;
+  const version = useParams<{ version: string }>().version;
   const location = useLocation();
   console.log(location);
   const getGoodsQuote = async () => {
     const qStr = location.hash.split('#')[1];
     console.log(qStr);
-    const res = await quote(goodsSn, qStr);
+    //todo：这写法实在太烂，但是我不知道JS要怎么改 额～～～
+    const res = location.pathname.endsWith('/preview')
+      ? await quotePreview(goodsSn, qStr)
+      : version
+      ? await quoteHistoryVersion(goodsSn, qStr, version)
+      : await quote(goodsSn, qStr);
     setCurrent(res.data);
+
     const values = {
       country: res.data?.country,
       quantity: res.data?.quantity,

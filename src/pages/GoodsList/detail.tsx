@@ -8,7 +8,7 @@ import {
 } from '@/services/apis/goods';
 import { DeleteOutlined, EditOutlined, EuroCircleOutlined } from '@ant-design/icons';
 import { GridContent, PageContainer, ProDescriptions } from '@ant-design/pro-components';
-import { Card, Col, Divider, Image, message, Popconfirm, Row, Tag, Tooltip } from 'antd';
+import { Card, Col, Divider, Empty, Image, message, Popconfirm, Row, Tag, Tooltip } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'umi';
 
@@ -16,6 +16,7 @@ import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
 import 'react-quill/dist/quill.snow.css';
 
 import GoodsChannelTable from '@/pages/GoodsList/component/goodsChannel';
+import QuoteTimeline from '@/pages/GoodsList/component/quoteTimeline';
 import CommentTable from './component/commentTable';
 import UpdateForm from './component/eum';
 import SkuTable from './component/skuTable';
@@ -72,13 +73,20 @@ const DetailPage: FC = () => {
       return <SkuTable loadData={loadData} current={current} />;
     }
     if (tabValue === 'channels') {
-      return <GoodsChannelTable goodsId={current.goodsId} />;
+      return <GoodsChannelTable goodsId={current?.goodsId} />;
     }
     if (tabValue === 'records') {
-      return <CommentTable goodsId={current.goodsId} />;
+      return <CommentTable goodsId={current?.goodsId} />;
+    }
+    if (tabValue === 'quote') {
+      return <QuoteTimeline goodsId={current?.goodsId} goodsSn={current?.goodsSn} />;
     }
     return null;
   };
+
+  if (current?.status === 3) {
+    return <Empty description={'商品[' + params.sn + ']已删除'}></Empty>;
+  }
 
   return (
     <PageContainer title={current?.goodsSn}>
@@ -113,8 +121,8 @@ const DetailPage: FC = () => {
                     const success = await deleteGoods({ goodsId: current?.goodsId } as API.Goods);
                     if (success) {
                       message.success('删除成功');
-                      window.history.back();
-                      // loadData();
+                      //window.history.back();
+                      loadData();
                     }
                     return true;
                   }}
@@ -170,6 +178,7 @@ const DetailPage: FC = () => {
               tabList={[
                 { key: 'skuList', tab: 'sku列表 ' },
                 { key: 'channels', tab: '运输线路' },
+                { key: 'quote', tab: '报价历史' },
                 { key: 'records', tab: '记录' },
               ]}
               activeTabKey={tabKey}
