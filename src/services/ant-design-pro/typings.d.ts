@@ -177,4 +177,30 @@ declare namespace API {
     channelCode: string;
     updatedAt?: number;
   };
+
+  type Order = {
+    orderId: number;
+    orderSn: string;
+    trackingNumber: string;
+    trackingNumber2: string;
+    quantity: number;
+    price: number;
+    sku: string;
+    productId: number;
+    country: string;
+    countryCode: string;
+    province: string;
+    city: string;
+    address: string;
+    zipCode: string;
+    shippingName: string;
+    phoneNumber: string;
+    orderTime: number;
+    payTime: number;
+    shippingTime: number;
+    shippingMethod: string;
+    status: number;
+    gmtCreated: number;
+    gmtModify: number;
+  };
 }
