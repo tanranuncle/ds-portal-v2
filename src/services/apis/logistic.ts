@@ -24,6 +24,8 @@ export const CountryOptions = [
   { value: 'IL', label: 'IL' },
   { value: 'SE', label: 'SE' },
   { value: 'CH', label: 'CH' },
+  { value: 'NZ', label: 'NZ' },
+  { value: 'BR', label: 'BR' },
 ];
 
 export const shippingCompanyEnum = {
