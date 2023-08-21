@@ -1,10 +1,20 @@
 import { Footer } from '@/components';
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
-import { quote, quoteHistoryVersion, quotePreview, tagEnumMap } from '@/services/apis/goods';
-import { CountryOptions } from '@/services/apis/logistic';
+import {
+  quote,
+  quoteHistoryVersion,
+  quotePreview,
+  supportedCountries,
+  tagEnumMap,
+} from '@/services/apis/goods';
 import { Helmet } from '@@/exports';
 import ProCard from '@ant-design/pro-card';
-import { GridContent, PageContainer, ProDescriptions } from '@ant-design/pro-components';
+import {
+  GridContent,
+  PageContainer,
+  ProDescriptions,
+  ProFormSelect,
+} from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import {
   Carousel,
@@ -16,7 +26,6 @@ import {
   InputNumber,
   Radio,
   Row,
-  Select,
   Space,
   Tooltip,
   Typography,
@@ -158,14 +167,16 @@ const Quote = () => {
                 <Form.Item name="carrierCode" hidden={true}>
                   <Input />
                 </Form.Item>
-                <Form.Item label="Country" name="country">
-                  <Select
-                    placeholder="Select a country"
-                    style={{ width: 150 }}
-                    options={CountryOptions}
-                    onChange={onFormChanged}
-                  />
-                </Form.Item>
+                <ProFormSelect
+                  name="country"
+                  label="Country"
+                  request={supportedCountries}
+                  style={{ width: 150 }}
+                  placeholder="Please select a country"
+                  rules={[{ required: true, message: 'Please select your country!' }]}
+                  onChange={onFormChanged}
+                />
+
                 <Form.Item label="Sku" name="skuId">
                   <Radio.Group onChange={onFormChanged}>
                     {current?.goodsVo?.skuList.map((item: any) => {

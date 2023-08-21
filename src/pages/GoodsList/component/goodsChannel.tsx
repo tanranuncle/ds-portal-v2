@@ -1,7 +1,19 @@
-import { deleteGoodsChannel, editGoodsChannel, getGoodsChannels } from '@/services/apis/goods';
-import { CountryOptions, getCompanyChannels, shippingCompanyEnum } from '@/services/apis/logistic';
-import { ActionType, ModalForm, ProForm, ProFormText, ProTable } from '@ant-design/pro-components';
-import { Button, Cascader, Form, message, Popconfirm, Select } from 'antd';
+import {
+  deleteGoodsChannel,
+  editGoodsChannel,
+  getGoodsChannels,
+  supportedCountries,
+} from '@/services/apis/goods';
+import { getCompanyChannels, shippingCompanyEnum } from '@/services/apis/logistic';
+import {
+  ActionType,
+  ModalForm,
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProTable,
+} from '@ant-design/pro-components';
+import { Button, Cascader, Form, message, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 
 interface Option {
@@ -119,18 +131,15 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
           >
             <ProForm.Group>
               <ProFormText name="goodsId" hidden disabled />
-              <Form.Item
-                label="国家"
+              <ProFormSelect
                 name="countryCodes"
+                label="Country"
+                mode="multiple"
+                request={supportedCountries}
+                style={{ width: 400 }}
+                placeholder="Please select a country"
                 rules={[{ required: true, message: '请选择国家' }]}
-              >
-                <Select
-                  mode="multiple"
-                  placeholder="Select a country"
-                  style={{ width: 400 }}
-                  options={CountryOptions}
-                />
-              </Form.Item>
+              />
               <Form.Item name="selectedChannel" label="渠道代码">
                 <Cascader
                   options={options}

@@ -13,6 +13,14 @@ export const tagEnumMap = {
   '3': { text: 'WFP', color: 'red', desc: 'Wait For Production(WFP)' },
 };
 
+export async function supportedCountries() {
+  const response = await request('/api/quote/supportedCountries', {
+    method: 'GET',
+  });
+  console.log(response);
+  return response.data.map((x: string) => ({ label: x, value: x }));
+}
+
 /** 获取商品列表 */
 export async function getGoodsList(
   params: {
