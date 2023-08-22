@@ -18,10 +18,28 @@ export type SkuTableParams = {
 };
 const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
   const [skuModalVisit, setSkuModalVisit] = useState(false);
+  const [skuModalTitle, setSkuModalTitle] = useState('');
   const [form] = Form.useForm();
 
-  const handleModifySku = (sku) => {
+  const handleAddSku = (sku) => {
+    setSkuModalTitle('添加sku');
     form.setFieldsValue(sku);
+    setSkuModalVisit(true);
+  };
+
+  const handleModifySku = (sku) => {
+    setSkuModalTitle('修改sku');
+    form.setFieldsValue(sku);
+    setSkuModalVisit(true);
+  };
+
+  const handleCopySku = (sku) => {
+    setSkuModalTitle('复制sku');
+    form.setFieldsValue(sku);
+    form.setFieldValue('skuId', undefined);
+    form.setFieldValue('skuName', undefined);
+    form.setFieldValue('skuNameEn', undefined);
+    form.setFieldValue('suppSkuId', undefined);
     setSkuModalVisit(true);
   };
 
@@ -128,6 +146,14 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
         >
           编辑
         </Button>,
+        <Button
+          key={'skuCopyBtn' + record.skuId}
+          size="small"
+          type="link"
+          onClick={() => handleCopySku(record)}
+        >
+          复制
+        </Button>,
         <Popconfirm
           key={'skuDelPop' + record.skuId}
           title="删除后不能恢复"
@@ -142,130 +168,130 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
   ];
 
   return (
-    <ProTable
-      columns={skuColumns}
-      rowKey="skuId"
-      search={false}
-      dataSource={current?.skuList}
-      toolBarRender={() => [
-        <ModalForm<API.Sku>
-          initialValues={{ goodsId: current?.goodsId }}
-          key="addSKu"
-          title="添加sku"
-          open={skuModalVisit}
-          trigger={
-            <Button type="primary">
-              <PlusOutlined />
-              添加sku
-            </Button>
-          }
-          form={form}
-          autoFocusFirstInput
-          modalProps={{
-            destroyOnClose: true,
-            onCancel: () => setSkuModalVisit(false),
-          }}
-          submitTimeout={2000}
-          onFinish={handleSkuSubmit}
-          layout="horizontal"
-        >
-          <ProFormText name="goodsId" hidden disabled />
-          <ProFormText name="skuId" hidden disabled />
-          <ProForm.Group>
-            <ProFormText
-              name="skuName"
-              label="sku名称"
-              required
-              placeholder="填写sku名称"
-              rules={[{ required: true, message: 'sku名称为必填项' }]}
-            />
-            <ProFormText
-              name="skuNameEn"
-              label="sku名称(EN)"
-              placeholder="填写sku名称(EN)"
-              rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormDigit
-              label="采购价"
-              name="purPrice"
-              required
-              width="xs"
-              min={1.0}
-              fieldProps={{ precision: 2 }}
-              rules={[{ required: true, message: '采购价为必填项' }]}
-            />
-            <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
-          </ProForm.Group>
+    <>
+      <ProTable
+        columns={skuColumns}
+        rowKey="skuId"
+        search={false}
+        dataSource={current?.skuList}
+        toolBarRender={() => [
+          <Button type="primary" onClick={handleAddSku}>
+            <PlusOutlined />
+            添加sku
+          </Button>,
+          <Button
+            key="exportBtn"
+            type="primary"
+            onClick={() => {
+              exportSkuList(current?.goodsId);
+            }}
+          >
+            导出
+          </Button>,
+        ]}
+      />
+      <ModalForm<API.Sku>
+        initialValues={{ goodsId: current?.goodsId }}
+        key="addSKu"
+        title={skuModalTitle}
+        open={skuModalVisit}
+        form={form}
+        autoFocusFirstInput
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () => setSkuModalVisit(false),
+        }}
+        submitTimeout={2000}
+        onFinish={handleSkuSubmit}
+        layout="horizontal"
+      >
+        <ProFormText name="goodsId" hidden disabled />
+        <ProFormText name="skuId" hidden disabled />
+        <ProForm.Group>
           <ProFormText
-            name="suppName"
-            label="供应商信息"
+            name="skuName"
+            label="sku名称"
             required
-            placeholder="填写供应商信息"
-            rules={[{ required: true, message: '供应商信息为必填项' }]}
+            placeholder="填写sku名称"
+            rules={[{ required: true, message: 'sku名称为必填项' }]}
           />
           <ProFormText
-            name="link"
-            label="sku链接"
+            name="skuNameEn"
+            label="sku名称(EN)"
+            placeholder="填写sku名称(EN)"
+            rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormDigit
+            label="采购价"
+            name="purPrice"
             required
-            placeholder="填写sku链接"
-            rules={[{ required: true, message: 'sku链接为必填项' }]}
+            width="xs"
+            min={1.0}
+            fieldProps={{ precision: 2 }}
+            rules={[{ required: true, message: '采购价为必填项' }]}
           />
-          <ProFormText
-            name="skuImage"
-            label="图片"
-            required={false}
-            placeholder="填写sku图片"
-            rules={[{ required: false, message: 'sku图片为必填项' }]}
+          <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
+        </ProForm.Group>
+        <ProFormText
+          name="suppName"
+          label="供应商信息"
+          required
+          placeholder="填写供应商信息"
+          rules={[{ required: true, message: '供应商信息为必填项' }]}
+        />
+        <ProFormText
+          name="link"
+          label="sku链接"
+          required
+          placeholder="填写sku链接"
+          rules={[{ required: true, message: 'sku链接为必填项' }]}
+        />
+        <ProFormText
+          name="skuImage"
+          label="图片"
+          required={false}
+          placeholder="填写sku图片"
+          rules={[{ required: false, message: 'sku图片为必填项' }]}
+        />
+        <ProForm.Group>
+          <ProFormDigit
+            label="长"
+            name="length"
+            width="xs"
+            min={1}
+            placeholder="cm"
+            rules={[{ required: true, message: '必填项' }]}
           />
-          <ProForm.Group>
-            <ProFormDigit
-              label="长"
-              name="length"
-              width="xs"
-              min={1}
-              placeholder="cm"
-              rules={[{ required: true, message: '必填项' }]}
-            />
-            <ProFormDigit
-              label="宽"
-              name="width"
-              width="xs"
-              min={1}
-              placeholder="cm"
-              rules={[{ required: true, message: '必填项' }]}
-            />
-            <ProFormDigit
-              label="高"
-              name="height"
-              width="xs"
-              min={1}
-              placeholder="cm"
-              rules={[{ required: true, message: '必填项' }]}
-            />
-            <ProFormDigit
-              label="重量"
-              name="weight"
-              width="xs"
-              min={0.01}
-              placeholder="kg"
-              rules={[{ required: true, message: '必填项' }]}
-            />
-          </ProForm.Group>
-          <ProFormTextArea name="remark" label="备注" />
-        </ModalForm>,
-        <Button
-          key="exportBtn"
-          type="primary"
-          onClick={() => {
-            exportSkuList(current?.goodsId);
-          }}
-        >
-          导出
-        </Button>,
-      ]}
-    />
+          <ProFormDigit
+            label="宽"
+            name="width"
+            width="xs"
+            min={1}
+            placeholder="cm"
+            rules={[{ required: true, message: '必填项' }]}
+          />
+          <ProFormDigit
+            label="高"
+            name="height"
+            width="xs"
+            min={1}
+            placeholder="cm"
+            rules={[{ required: true, message: '必填项' }]}
+          />
+          <ProFormDigit
+            label="重量"
+            name="weight"
+            width="xs"
+            min={0.01}
+            placeholder="kg"
+            rules={[{ required: true, message: '必填项' }]}
+          />
+        </ProForm.Group>
+        <ProFormTextArea name="remark" label="备注" />
+      </ModalForm>
+    </>
   );
 };
 
