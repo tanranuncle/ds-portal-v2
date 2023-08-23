@@ -23,7 +23,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
 
   const handleAddSku = (sku) => {
     setSkuModalTitle('添加sku');
-    form.setFieldsValue(sku);
+    form.setFieldsValue({ ...sku, goodsId: current?.goodsId });
     setSkuModalVisit(true);
   };
 
