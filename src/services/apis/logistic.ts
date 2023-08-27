@@ -44,6 +44,9 @@ export const shippingCompanyEnum = {
   SDH: {
     text: '杭州金麦',
   },
+  YanWenExpress: {
+    text: '燕文物流',
+  },
 };
 
 export type ChannelType = {
