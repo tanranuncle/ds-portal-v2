@@ -67,7 +67,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
     {
       title: 'skuId',
       dataIndex: 'skuId',
-      width: 48,
+      width: 78,
     },
     {
       title: 'sku名称',
@@ -83,6 +83,10 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
           return <div></div>;
         }
       },
+    },
+    {
+      title: '店小蜜sku',
+      dataIndex: 'dxmSkuId',
     },
     {
       title: '供方skuId',
@@ -209,6 +213,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
         <ProFormText name="skuId" hidden disabled />
         <ProForm.Group>
           <ProFormText
+            width={130}
             name="skuName"
             label="sku名称"
             required
@@ -216,11 +221,13 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             rules={[{ required: true, message: 'sku名称为必填项' }]}
           />
           <ProFormText
+            width={130}
             name="skuNameEn"
             label="sku名称(EN)"
             placeholder="填写sku名称(EN)"
             rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
           />
+          <ProFormText name="parentId" width={130} label="父skuId" placeholder="父skuId" />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormDigit
@@ -232,7 +239,8 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             fieldProps={{ precision: 2 }}
             rules={[{ required: true, message: '采购价为必填项' }]}
           />
-          <ProFormText name="suppSkuId" label="供方skuId" placeholder="供方skuId" />
+          <ProFormText name="suppSkuId" width={130} label="供方skuId" placeholder="供方skuId" />
+          <ProFormText name="dxmSkuId" width={130} label="店小蜜sku" placeholder="店小蜜sku" />
         </ProForm.Group>
         <ProFormText
           name="suppName"
