@@ -80,7 +80,9 @@ const Quote = () => {
         '&quantity=' +
         form.getFieldValue('quantity') +
         '&skuId=' +
-        form.getFieldValue('skuId'),
+        form.getFieldValue('skuId') +
+        '&channelType=' +
+        form.getFieldValue('channelType'),
     });
   };
 
@@ -197,6 +199,18 @@ const Quote = () => {
                     title={'qty'}
                     onChange={onFormChanged}
                   ></InputNumber>
+                </Form.Item>
+                <Form.Item label="ChannelType" name="channelType">
+                  <Radio.Group onChange={onFormChanged}>
+                    <Radio.Button key="N" value={1}>
+                      {' '}
+                      Normal{' '}
+                    </Radio.Button>
+                    <Radio.Button key="F" value={2}>
+                      {' '}
+                      Fast{' '}
+                    </Radio.Button>
+                  </Radio.Group>
                 </Form.Item>
               </Form>
             </ProCard>

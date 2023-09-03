@@ -9,6 +9,7 @@ import {
   ActionType,
   ModalForm,
   ProForm,
+  ProFormCheckbox,
   ProFormSelect,
   ProFormText,
   ProTable,
@@ -62,12 +63,22 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
     {
       title: '国家',
       dataIndex: 'countryCode',
+      width: 100,
     },
     {
-      title: '渠道代码',
+      title: '普线渠道',
       dataIndex: 'channelCode',
+      width: 400,
       render: (_, record) => {
-        return record.channelName + '(' + record.channelCode + ')';
+        return record.channelCode ? record.channelName + '(' + record.channelCode + ')' : '';
+      },
+    },
+    {
+      title: '快线渠道',
+      dataIndex: 'channelCode2',
+      width: 400,
+      render: (_, record) => {
+        return record.channelCode2 ? record.channelName2 + '(' + record.channelCode2 + ')' : '';
       },
     },
     {
@@ -112,16 +123,19 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
               countryCodes: string[];
               goodsId: number;
               selectedChannel: string[];
+              channelTypes: string[];
             }) => {
-              const channelConfigs: API.GoodsChannelType[] = values.countryCodes.map(
-                (countryCode) => {
-                  return {
+              const channelConfigs: API.GoodsChannelType[] = [];
+              values.countryCodes.map((countryCode) => {
+                values.channelTypes.map((channelType) => {
+                  channelConfigs.push({
                     countryCode: countryCode,
                     channelCode: values.selectedChannel[1],
                     goodsId: values.goodsId,
-                  };
-                },
-              );
+                    channelType: channelType,
+                  });
+                });
+              });
               await handleUpdate(channelConfigs);
               actionRef.current?.reloadAndRest?.();
               return true;
@@ -140,7 +154,11 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
                 placeholder="Please select a country"
                 rules={[{ required: true, message: '请选择国家' }]}
               />
-              <Form.Item name="selectedChannel" label="渠道代码">
+              <Form.Item
+                name="selectedChannel"
+                label="渠道代码"
+                rules={[{ required: true, message: '请选择渠道' }]}
+              >
                 <Cascader
                   options={options}
                   loadData={loadData}
@@ -149,6 +167,15 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
                 />
               </Form.Item>
             </ProForm.Group>
+            <ProFormCheckbox.Group
+              name="channelTypes"
+              label="类型"
+              options={[
+                { label: '普线', value: 1 },
+                { label: '快线', value: 2 },
+              ]}
+              rules={[{ required: true, message: '请选择类型' }]}
+            />
           </ModalForm>,
         ];
       }}

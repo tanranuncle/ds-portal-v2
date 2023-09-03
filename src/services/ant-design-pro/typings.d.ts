@@ -175,6 +175,7 @@ declare namespace API {
     goodsId: number;
     countryCode: string;
     channelCode: string;
+    channelType: string;
     updatedAt?: number;
   };
 
