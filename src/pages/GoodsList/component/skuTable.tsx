@@ -17,6 +17,7 @@ export type SkuTableParams = {
   current: Partial<API.Goods> | undefined;
 };
 const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
+  const [childSkuEdit, setChildSkuEdit] = useState(false);
   const [skuModalVisit, setSkuModalVisit] = useState(false);
   const [skuModalTitle, setSkuModalTitle] = useState('');
   const [form] = Form.useForm();
@@ -24,12 +25,20 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
   const handleAddSku = (sku) => {
     setSkuModalTitle('添加sku');
     form.setFieldsValue({ ...sku, goodsId: current?.goodsId });
+    setChildSkuEdit(false);
+    setSkuModalVisit(true);
+  };
+  const handleAddChildSku = (sku) => {
+    setSkuModalTitle('添加子sku');
+    form.setFieldsValue({ goodsId: current?.goodsId, parentId: sku.skuId });
+    setChildSkuEdit(true);
     setSkuModalVisit(true);
   };
 
   const handleModifySku = (sku) => {
     setSkuModalTitle('修改sku');
     form.setFieldsValue(sku);
+    setChildSkuEdit(sku.parentId > 0);
     setSkuModalVisit(true);
   };
 
@@ -40,6 +49,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
     form.setFieldValue('skuName', undefined);
     form.setFieldValue('skuNameEn', undefined);
     form.setFieldValue('suppSkuId', undefined);
+    setChildSkuEdit(sku.parentId > 0);
     setSkuModalVisit(true);
   };
 
@@ -141,33 +151,49 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: (text, record) => [
-        <Button
-          key={'skuEditBtn' + record.skuId}
-          size="small"
-          type="link"
-          onClick={() => handleModifySku(record)}
-        >
-          编辑
-        </Button>,
-        <Button
-          key={'skuCopyBtn' + record.skuId}
-          size="small"
-          type="link"
-          onClick={() => handleCopySku(record)}
-        >
-          复制
-        </Button>,
-        <Popconfirm
-          key={'skuDelPop' + record.skuId}
-          title="删除后不能恢复"
-          onConfirm={() => handleDeleteSku(record.skuId)}
-        >
-          <Button key={'skuDelBtn' + record.skuId} size="small" danger type="link">
-            删除
-          </Button>
-        </Popconfirm>,
-      ],
+      render: (text, record) => {
+        let optionArr = [
+          <Button
+            key={'skuEditBtn' + record.skuId}
+            size="small"
+            type="link"
+            onClick={() => handleModifySku(record)}
+          >
+            编辑
+          </Button>,
+          <Button
+            key={'skuCopyBtn' + record.skuId}
+            size="small"
+            type="link"
+            onClick={() => handleCopySku(record)}
+          >
+            复制
+          </Button>,
+          <Popconfirm
+            key={'skuDelPop' + record.skuId}
+            title="删除后不能恢复"
+            onConfirm={() => handleDeleteSku(record.skuId)}
+          >
+            <Button key={'skuDelBtn' + record.skuId} size="small" danger type="link">
+              删除
+            </Button>
+          </Popconfirm>,
+        ];
+        if (record.parentId == 0) {
+          optionArr.push(
+            <Button
+              key={'skuCopyBtn' + record.skuId}
+              size="small"
+              type="link"
+              onClick={() => handleAddChildSku(record)}
+            >
+              添加子SKU
+            </Button>,
+          );
+        }
+
+        return optionArr;
+      },
     },
   ];
 
@@ -211,9 +237,9 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
       >
         <ProFormText name="goodsId" hidden disabled />
         <ProFormText name="skuId" hidden disabled />
+        <ProFormText name="parentId" hidden disabled />
         <ProForm.Group>
           <ProFormText
-            width={130}
             name="skuName"
             label="sku名称"
             required
@@ -221,47 +247,47 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             rules={[{ required: true, message: 'sku名称为必填项' }]}
           />
           <ProFormText
-            width={130}
             name="skuNameEn"
             label="sku名称(EN)"
             placeholder="填写sku名称(EN)"
             rules={[{ required: false, message: 'sku名称(EN)为非必填项' }]}
           />
-          <ProFormText name="parentId" width={130} label="父skuId" placeholder="父skuId" />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormDigit
             label="采购价"
             name="purPrice"
-            required
             width="xs"
             min={1.0}
             fieldProps={{ precision: 2 }}
-            rules={[{ required: true, message: '采购价为必填项' }]}
+            rules={[{ required: !childSkuEdit, message: '采购价为必填项' }]}
           />
           <ProFormText name="suppSkuId" width={130} label="供方skuId" placeholder="供方skuId" />
-          <ProFormText name="dxmSkuId" width={130} label="店小蜜sku" placeholder="店小蜜sku" />
+          <ProFormText
+            name="dxmSkuId"
+            width={130}
+            label="店小蜜sku"
+            placeholder="店小蜜sku"
+            rules={[{ required: true, message: '店小蜜sku为必填项' }]}
+          />
         </ProForm.Group>
         <ProFormText
           name="suppName"
           label="供应商信息"
-          required
           placeholder="填写供应商信息"
-          rules={[{ required: true, message: '供应商信息为必填项' }]}
+          rules={[{ required: !childSkuEdit, message: '供应商信息为必填项' }]}
         />
         <ProFormText
           name="link"
           label="sku链接"
-          required
           placeholder="填写sku链接"
-          rules={[{ required: true, message: 'sku链接为必填项' }]}
+          rules={[{ required: !childSkuEdit, message: 'sku链接为必填项' }]}
         />
         <ProFormText
           name="skuImage"
           label="图片"
-          required={false}
           placeholder="填写sku图片"
-          rules={[{ required: false, message: 'sku图片为必填项' }]}
+          rules={[{ required: childSkuEdit, message: 'sku图片为必填项' }]}
         />
         <ProForm.Group>
           <ProFormDigit
@@ -270,7 +296,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             width="xs"
             min={1}
             placeholder="cm"
-            rules={[{ required: true, message: '必填项' }]}
+            rules={[{ required: !childSkuEdit, message: '必填项' }]}
           />
           <ProFormDigit
             label="宽"
@@ -278,7 +304,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             width="xs"
             min={1}
             placeholder="cm"
-            rules={[{ required: true, message: '必填项' }]}
+            rules={[{ required: !childSkuEdit, message: '必填项' }]}
           />
           <ProFormDigit
             label="高"
@@ -286,7 +312,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             width="xs"
             min={1}
             placeholder="cm"
-            rules={[{ required: true, message: '必填项' }]}
+            rules={[{ required: !childSkuEdit, message: '必填项' }]}
           />
           <ProFormDigit
             label="重量"
@@ -294,7 +320,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             width="xs"
             min={0.01}
             placeholder="kg"
-            rules={[{ required: true, message: '必填项' }]}
+            rules={[{ required: !childSkuEdit, message: '必填项' }]}
           />
         </ProForm.Group>
         <ProFormTextArea name="remark" label="备注" />
