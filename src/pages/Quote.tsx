@@ -63,6 +63,7 @@ const Quote = () => {
       quantity: res.data?.quantity,
       skuId: res.data?.currentSku.skuId,
       carrierCode: res.data?.result.carrierCode,
+      channelType: res.data?.channelType,
     };
     form.setFieldsValue(values);
   };

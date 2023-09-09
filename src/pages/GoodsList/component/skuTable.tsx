@@ -154,7 +154,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
       render: (text, record) => {
         let optionArr = [
           <Button
-            key={'skuEditBtn' + record.skuId}
+            key={'skuEditBtn_' + record.skuId}
             size="small"
             type="link"
             onClick={() => handleModifySku(record)}
@@ -162,7 +162,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             编辑
           </Button>,
           <Button
-            key={'skuCopyBtn' + record.skuId}
+            key={'skuCopyBtn_' + record.skuId}
             size="small"
             type="link"
             onClick={() => handleCopySku(record)}
@@ -170,7 +170,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
             复制
           </Button>,
           <Popconfirm
-            key={'skuDelPop' + record.skuId}
+            key={'skuDelPop_' + record.skuId}
             title="删除后不能恢复"
             onConfirm={() => handleDeleteSku(record.skuId)}
           >
@@ -182,7 +182,7 @@ const SkuTable: React.FC<SkuTableParams> = ({ loadData, current }) => {
         if (record.parentId == 0) {
           optionArr.push(
             <Button
-              key={'skuCopyBtn' + record.skuId}
+              key={'addChildBtn_' + record.skuId}
               size="small"
               type="link"
               onClick={() => handleAddChildSku(record)}

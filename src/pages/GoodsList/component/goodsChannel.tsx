@@ -109,7 +109,7 @@ const GoodsChannelTable: React.FC<GoodsChannelTableParams> = ({ goodsId }) => {
   return (
     <ProTable<API.GoodsChannelType>
       request={() => getGoodsChannels(goodsId)}
-      rowKey="recId"
+      rowKey="countryCode"
       columns={columns}
       search={false}
       actionRef={actionRef}
