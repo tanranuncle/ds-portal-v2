@@ -1,4 +1,6 @@
 export default [
+  { path: '/', redirect: '/welcome' },
+  { path: '*', layout: false, component: './404' },
   { path: '/user', layout: false, routes: [{ path: '/user/login', component: './User/Login' }] },
   { path: '/goodsQuote/:sn', layout: false, component: './Quote' },
   { path: '/goodsQuote/:sn/preview', layout: false, component: './Quote' },
@@ -6,13 +8,6 @@ export default [
   { path: '/welcome', name: 'welcome', icon: 'smile', component: './Welcome', hideInMenu: true },
   // { icon: 'table', name: '查询表单', path: '/list', component: './TableList' },
   { icon: 'euro', name: '询价单', path: '/inquiries', component: './InquiryList' },
-  { icon: 'UnorderedListOutlined', name: '订单', path: '/order', component: './OrderList' },
-  {
-    icon: 'UnorderedListOutlined',
-    name: '结算单',
-    path: '/settleOrder',
-    component: './SettleOrderList',
-  },
   {
     path: '/inquiries/:name',
     name: '询价单详情',
@@ -26,8 +21,8 @@ export default [
     hideInMenu: true,
     component: './GoodsList/detail',
   },
-  { path: '/', redirect: '/welcome' },
-  { path: '*', layout: false, component: './404' },
+  { icon: 'UnorderedListOutlined', name: '订单', path: '/order', component: './OrderList' },
+  { icon: 'AuditOutlined', name: '结算单', path: '/settleOrder', component: './SettleOrderList' },
   {
     path: '/admin',
     icon: 'crown',
