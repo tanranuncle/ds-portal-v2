@@ -27,12 +27,15 @@ const OrderList: React.FC = () => {
     },
     fileList: fileList,
     beforeUpload: (file) => {
-      setFileList([...fileList, file]);
+      setFileList([file]);
       return true;
     },
     onChange(info) {
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'removed') {
+        setFileList([]);
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} file uploaded successfully`);
@@ -40,7 +43,7 @@ const OrderList: React.FC = () => {
         setFileList([]);
         actionRef.current?.reload();
       } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} file upload failed.` + info.file.response.message);
       }
     },
   };

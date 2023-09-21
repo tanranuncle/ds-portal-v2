@@ -84,7 +84,9 @@ const DetailPage: FC = () => {
               <Tag color={tagEnumMap[record.relationType].color} key={record.recId}>
                 {tagEnumMap[record.relationType].text}
               </Tag>
-              <Link to={'/goods/' + text}>{text}</Link>
+              <Link to={'/goods/' + text} target={'_blank'}>
+                {text}
+              </Link>
             </>
           );
         }
