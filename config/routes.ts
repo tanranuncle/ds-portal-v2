@@ -8,6 +8,12 @@ export default [
   { icon: 'euro', name: '询价单', path: '/inquiries', component: './InquiryList' },
   { icon: 'UnorderedListOutlined', name: '订单', path: '/order', component: './OrderList' },
   {
+    icon: 'UnorderedListOutlined',
+    name: '结算单',
+    path: '/settleOrder',
+    component: './SettleOrderList',
+  },
+  {
     path: '/inquiries/:name',
     name: '询价单详情',
     hideInMenu: true,
