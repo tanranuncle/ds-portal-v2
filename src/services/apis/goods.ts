@@ -163,26 +163,8 @@ export function quoteHistory(goodsId: number) {
   });
 }
 
-export function quote(goodsSn: string, qStr: string) {
-  return request<any>('/api/quote/' + goodsSn + (qStr ? '?' + qStr : ''), {
-    method: 'GET',
-  });
-}
-
-export function quoteListPreview(goodsSn: string) {
-  return request<any>('/api/quote/' + goodsSn + '/list/preview', {
-    method: 'GET',
-  });
-}
-
-export function quotePreview(goodsSn: string, qStr: string) {
-  return request<any>('/api/quote/' + goodsSn + '/preview' + (qStr ? '?' + qStr : ''), {
-    method: 'GET',
-  });
-}
-
-export function quoteHistoryVersion(goodsSn: string, qStr: string, version: string) {
-  return request<any>('/api/quote/' + goodsSn + '/history/' + version + (qStr ? '?' + qStr : ''), {
+export function quote(goodsSn: string, version: string) {
+  return request<any>('/api/quote/' + goodsSn + '/list/' + (version ? version : 'latest'), {
     method: 'GET',
   });
 }
