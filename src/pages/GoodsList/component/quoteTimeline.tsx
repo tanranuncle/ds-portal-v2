@@ -1,4 +1,4 @@
-import { quoteHistory, quoteListPreview, saveQuote } from '@/services/apis/goods';
+import { quote, quoteHistory, saveQuote } from '@/services/apis/goods';
 import {
   EditableProTable,
   ModalForm,
@@ -114,7 +114,7 @@ export const QuoteMF: React.FC<QuoteMFParams> = ({ goodsId, goodsSn, trigger, on
       }
       onOpenChange={(open: boolean) => {
         if (open) {
-          quoteListPreview(goodsSn).then((value) => {
+          quote(goodsSn, 'preview').then((value) => {
             if (value.code === 200) {
               console.log(value.data.quoteList);
               setDataSource(value.data.quoteList);

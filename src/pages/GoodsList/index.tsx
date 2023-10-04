@@ -32,7 +32,7 @@ const GoodsList: FC = () => {
         itemLayout="vertical"
         actionRef={actionRef}
         pagination={{
-          defaultPageSize: 5,
+          defaultPageSize: 10,
         }}
         metas={{
           title: {
@@ -118,7 +118,7 @@ const GoodsList: FC = () => {
               console.log(value);
               setSearchStr(value);
               if (actionRef.current) {
-                actionRef.current.reload();
+                actionRef.current.reload(true);
               }
             },
           },
