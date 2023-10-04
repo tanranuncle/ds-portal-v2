@@ -42,9 +42,15 @@ const QuoteList = ({ quoteDto }) => {
     return quoteDto?.quoteList.filter((x) => x.skuId === skuId);
   };
 
+  const goodsImageUrl = quoteDto?.goodsVo?.goodsImage;
+
   const data = quoteDto?.goodsVo?.skuList.map((item) => ({
     extra: (
-      <Card hoverable style={{ width: 240 }} cover={<img alt="sku" src={item.skuImage} />}>
+      <Card
+        hoverable
+        style={{ width: 240 }}
+        cover={<img alt="sku" src={item.skuImage ? item.skuImage : goodsImageUrl} />}
+      >
         <Card.Meta description={tagEnumMap[quoteDto?.goodsVo?.availability]?.desc} />
       </Card>
     ),
