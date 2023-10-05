@@ -5,7 +5,7 @@ import {
   getGoodsList,
   tagEnumMap,
 } from '@/services/apis/goods';
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { ActionType, PageContainer, ProDescriptions, ProList } from '@ant-design/pro-components';
 import { Button, Image, message, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
@@ -13,6 +13,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link } from 'umi';
 
 import GoodsRibbon from '@/pages/GoodsList/component/GoodsRibbon';
+import SkuImporter from '@/pages/GoodsList/component/skuImport';
 import UpdateForm from './component/eum';
 
 const { Paragraph } = Typography;
@@ -143,6 +144,14 @@ const GoodsList: FC = () => {
                 </Button>
               }
               title="新建商品"
+            />,
+            <SkuImporter
+              trigger={
+                <Button>
+                  <UploadOutlined />
+                  sku导入
+                </Button>
+              }
             />,
           ],
         }}
