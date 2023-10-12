@@ -94,19 +94,19 @@ const OrderList: React.FC = () => {
       title: '下单时间',
       dataIndex: 'orderTime',
       hideInSearch: true,
-      render: (_, record) => [moment(record.orderTime * 1000).format('YYYY-MM-DD')],
+      render: (_, record) => [moment(record.orderTime * 1000).format('YYYY-MM-DD HH:mm:ss')],
     },
     {
       title: '支付时间',
       dataIndex: 'payTime',
       hideInSearch: true,
-      render: (_, record) => [moment(record.payTime * 1000).format('YYYY-MM-DD')],
+      render: (_, record) => [moment(record.payTime * 1000).format('YYYY-MM-DD HH:mm:ss')],
     },
     {
       title: '发货时间',
       dataIndex: 'shippingTime',
       hideInSearch: true,
-      render: (_, record) => [moment(record.shippingTime * 1000).format('YYYY-MM-DD')],
+      render: (_, record) => [moment(record.shippingTime * 1000).format('YYYY-MM-DD HH:mm:ss')],
     },
     {
       title: '发货方式',
